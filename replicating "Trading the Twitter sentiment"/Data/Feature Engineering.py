@@ -1,39 +1,43 @@
 import numpy as np
 import pandas as pd
-from Featurefunctions import number_of_tweets, daily_average_sentiment, sentiment_volatility, sentiment_momentum
+from Feature_functions import number_of_tweets, daily_average_sentiment, sentiment_volatility, sentiment_momentum
 
-
-ticker_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_1month.csv')
-#Feature_set_Ticker = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_1month.csv')
-
-print(ticker_tweets.head())
-
-
-
-#type conversion for the ticker_tweet df
-ticker_tweets['date_short']=pd.to_datetime(ticker_tweets['date_short'])
+ticker_set_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_TSLA.csv')
+product_set_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv')
+ticker_set_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_GM.csv')
+product_set_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_GM.csv')
+tweet_list=[ticker_set_TSLA, product_set_TSLA, ticker_set_GM, product_set_GM]
 
 #initiate the feature dataframes where we can input the different features
 col =["date","number of tweets","daily average sentiment score","sentiment volatility","sentiment momentum","reversal","previous day's return", "volume", "price momentum", "price volatility"]
 Feature_set = pd.DataFrame(columns=col)
-unique_dates = ticker_tweets['date_short'].unique()
+unique_dates = tweet_list[0]['date_short'].unique()
 df = pd.DataFrame(data=unique_dates, columns=['date'])
 df['date'] = pd.to_datetime(df['date'])
-
 Feature_set = Feature_set.append(df,ignore_index=True )
 
-Feature_set_Ticker = Feature_set
-Feature_set_Product = Feature_set
+Feature_set_Ticker_TSLA = Feature_set
+Feature_set_Product_TSLA = Feature_set
+Feature_set_Ticker_GM = Feature_set
+Feature_set_Product_GM = Feature_set
+feature_list =[Feature_set_Ticker_TSLA,Feature_set_Product_TSLA,Feature_set_Ticker_GM,Feature_set_Product_GM]
 
-#get number of tweets
-Feature_set_Ticker = number_of_tweets(ticker_tweets, Feature_set_Ticker)
-#get daily average score
-Feature_set_Ticker = daily_average_sentiment(ticker_tweets, Feature_set_Ticker)
-#get sentiment volatility
-Feature_set_Ticker = sentiment_volatility(ticker_tweets, Feature_set_Ticker)
-#get sentiment momentum
-Feature_set_Ticker = sentiment_momentum(ticker_tweets, Feature_set_Ticker, 5)
-#get sentiment reversal
-# TODO
+for t in tweet_list:
+    t['date_short']=pd.to_datetime(t['date_short'])
+    ticker_tweets = t
+    for i in feature_list:
+        #get number of tweets
+        i = number_of_tweets(ticker_tweets, i)
+        #get daily average score
+        i = daily_average_sentiment(ticker_tweets, i)
+        #get sentiment volatility
+        i = sentiment_volatility(ticker_tweets, i)
+        #get sentiment momentum
+        i = sentiment_momentum(ticker_tweets, i, 5)
+        #get sentiment reversal
+        # TODO
 
-print("Sentiment features are calculated")
+feature_list[0].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Ticker_TSLA.csv', index = False)
+feature_list[1].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_TSLA.csv', index = False)
+feature_list[2].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Ticker_GM.csv', index = False)
+feature_list[3].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_GM.csv', index = False)

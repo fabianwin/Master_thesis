@@ -81,4 +81,4 @@ for n,keyword in enumerate(keywords):
 
 #---------------------------
 print("Product Set completely scraped")
-product_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_tweets_GM.csv', index = False)
+product_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_GM.csv', index = False)

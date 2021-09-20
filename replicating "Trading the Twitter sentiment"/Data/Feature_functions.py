@@ -1,3 +1,7 @@
+import numpy as np
+import pandas as pd
+#----------------------------
+
 def number_of_tweets(twitter_df, feature_df):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
@@ -125,4 +129,4 @@ def price_volatility(ticker,start, end, feature_df):
     for i,row in df.iterrows():
         feature_df.loc[feature_df['date'] == pd.Timestamp(i), ['price volatility']] = row['Close']
 
-    return feature_df 
+    return feature_df
