@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from _4.1_Feature_functions import number_of_tweets, daily_average_sentiment, sentiment_volatility, sentiment_momentum
+from Feature_functions import number_of_tweets, daily_average_sentiment, sentiment_volatility, sentiment_momentum
 
 ticker_set_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_TSLA.csv')
 product_set_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv')
