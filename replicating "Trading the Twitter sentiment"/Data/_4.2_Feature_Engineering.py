@@ -36,6 +36,14 @@ for t in tweet_list:
         i = sentiment_momentum(ticker_tweets, i, 5)
         #get sentiment reversal
         # TODO
+        #get previous day's return
+        previous_day_return(TSLA,i)
+        #get daily volume
+        volume(TSLA, i)
+        #get price momentum
+        price_momentum(TSLA, i, 5)
+        #get price volatility
+        price_volatility("TSLA", start, end, i)
 
 feature_list[0].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Ticker_TSLA.csv', index = False)
 feature_list[1].to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_TSLA.csv', index = False)
