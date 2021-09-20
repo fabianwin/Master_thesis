@@ -84,7 +84,7 @@ def previous_day_return(finance_df, feature_df):
     """
     #previous day return
     for i, row in finance_df.iterrows():
-        rtn = row['Open']/row['Close']-1
+        rtn = row['open']/row['close']-1
         feature_df.loc[feature_df['date'] == i, "previous day's return"]= rtn
 
     return feature_df
@@ -97,7 +97,7 @@ def volume(finance_df, feature_df):
     """
     #previous day return
     for i, row in finance_df.iterrows():
-        feature_df.loc[feature_df['date'] == i, "volume"]= row['Volume']
+        feature_df.loc[feature_df['date'] == i, "volume"]= row['volume']
 
     return feature_df
 
@@ -108,25 +108,24 @@ def price_momentum(finance_df, feature_df, d):
     - Returns: feature_df, same shape as df but with the inputed features
     """
     df_shifted = finance_df.shift(periods=d)
-    df = (finance_df['Close']-df_shifted['Close']).to_frame()
+    df = (finance_df['close']-df_shifted['close']).to_frame()
     for i,row in df.iterrows():
-        feature_df.loc[feature_df['date'] == i, ['price momentum']] = row['Close']
+        feature_df.loc[feature_df['date'] == i, ['price momentum']] = row['close']
 
     return feature_df
 
 #----------------------------
-def price_volatility(ticker,start, end, feature_df):
+def price_volatility(finance_df, feature_df):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
     """
-    df = yf.download("TSLA",start,end, interval="5m")
-    df.index = pd.to_datetime(df.index)
-    df = df.groupby([df.index.date]).std()
-    df['Close'] = df['Close']**.5
+    finance_df.index = pd.to_datetime(finance_df.index)
+    finance_df = finance_df.groupby([finance_df.index.date]).std()
+    finance_df['close'] = finance_df['close']**.5
 
     #feature_df['date'] = feature_df['date'].dt.time
     for i,row in df.iterrows():
-        feature_df.loc[feature_df['date'] == pd.Timestamp(i), ['price volatility']] = row['Close']
+        feature_df.loc[feature_df['date'] == pd.Timestamp(i), ['price volatility']] = row['close']
 
     return feature_df
