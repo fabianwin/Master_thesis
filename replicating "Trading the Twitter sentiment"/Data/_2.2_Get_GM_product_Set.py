@@ -1,5 +1,9 @@
 from pytrends.request import TrendReq
 import numpy as np
+import pandas as pd
+import snscrape.modules.twitter as sntwitter
+import datetime
+from datetime import datetime
 
 #create the dataframe for the sub set, columns are the 2 changing variables for twitter scrapers
 col =["keyword","date"]

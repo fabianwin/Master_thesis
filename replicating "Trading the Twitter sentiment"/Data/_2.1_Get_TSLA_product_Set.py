@@ -1,5 +1,7 @@
 from pytrends.request import TrendReq
 import numpy as np
+import pandas as pd
+import snscrape.modules.twitter as sntwitter
 
 #create the dataframe for the sub set, columns are the 2 changing variables for twitter scrapers
 col =["keyword","date"]
@@ -22,11 +24,11 @@ for i in unique_dates:
     pytrends.build_payload(trend_word, cat=0, timeframe=date, geo='', gprop='')
     data = pytrends.related_queries()
 
-    if data['TESLA']['top'] is None:
+    if data['TSLA']['top'] is None:
         print("dict is empty")
     else:
-        data =  pd.DataFrame.from_dict({(i): data['TESLA']['top'][i]
-                        for i in data['TESLA']['top'].keys()},
+        data =  pd.DataFrame.from_dict({(i): data['TSLA']['top'][i]
+                        for i in data['TSLA']['top'].keys()},
                         orient ='columns')
 
         for index, row in data.iterrows():

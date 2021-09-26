@@ -3,6 +3,7 @@ import re
 import string
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+import pandas as pd
 
 def preprocess_tweet(tweet):
     # Remove urls
@@ -45,7 +46,7 @@ def sentence_sentiment_df(doc):
 
 # Calculate TSLA tweets
 ticker_tweets_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_TSLA.csv')
-product_tweets_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_tweets_TSLA.csv.csv')
+product_tweets_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv')
 
 Stanford_sentiment = []
 for index, row in ticker_tweets_TSLA.iterrows():
@@ -67,12 +68,12 @@ for index, row in product_tweets_TSLA.iterrows():
     Stanford_sentiment.append(score)
 
 product_tweets_TSLA['Stanford_sentiment'] = Stanford_sentiment
-product_tweets_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_tweets_TSLA.csv', index = False)
+product_tweets_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv', index = False)
 print("TESLA sentiments score are calculated")
 
 # Calculate GM tweets
 ticker_tweets_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_GM.csv')
-product_tweets_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_tweets_GM.csv.csv')
+product_tweets_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_GM.csv')
 
 Stanford_sentiment = []
 for index, row in ticker_tweets_GM.iterrows():
@@ -94,5 +95,5 @@ for index, row in product_tweets_GM.iterrows():
     Stanford_sentiment.append(score)
 
 product_tweets_GM['Stanford_sentiment'] = Stanford_sentiment
-product_tweets_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_tweets_GM.csv', index = False)
+product_tweets_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_GM.csv', index = False)
 print("GM sentiments score are calculated")
