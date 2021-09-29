@@ -16,6 +16,8 @@ def construct_sentiment_feature_set(twitter_df, feature_df, finance_short_df, fi
     feature_df = sentiment_momentum(twitter_df, feature_df, 5)
     #get previous day's return
     previous_day_return(finance_short_df, feature_df)
+    #get current day Returns
+    current_day_return(finance_short_df, feature_df)
     #get daily volume
     volume(finance_short_df, feature_df)
     #get price momentum
@@ -80,6 +82,8 @@ def sentiment_momentum(twitter_df, feature_df, d):
         t_before = row['date'] - pd.Timedelta(days=d)
         s_now = row['daily average sentiment score']
         s_before = feature_df.loc[feature_df['date'] == t_before,'daily average sentiment score'].max()
+        if s_before == 0:
+            s_before = float("NaN")
         p = (s_now / s_before)*100
         feature_df.loc[feature_df['date'] == row['date'], ['sentiment momentum']] = p
 
@@ -100,6 +104,22 @@ def sentiment_reversal(twitter_df, feature_df):
 
 #----------------------------
 def previous_day_return(finance_df, feature_df):
+    """
+    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
+    - Returns: feature_df, same shape as df but with the inputed previous day's return
+    """
+    #previous day return
+    finance_df['1. open'] = finance_df['1. open'].shift(periods=1)
+    finance_df['4. close'] = finance_df['4. close'].shift(periods=1)
+    for i, row in finance_df.iterrows():
+        rtn = row['1. open']/row['4. close']-1
+        #print(row[])
+        feature_df.loc[feature_df['date'] == row['date'], "previous day's return"]= rtn
+
+    return feature_df
+
+#----------------------------
+def current_day_return(finance_df, feature_df):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: feature_df, same shape as df but with the inputed previous day's return

@@ -1,6 +1,5 @@
-import numpy as np
 import pandas as pd
-#from Feature_functions import number_of_tweets, daily_average_sentiment, sentiment_volatility, sentiment_momentum
+import numpy as np
 from alpha_vantage.timeseries import TimeSeries
 import time
 
@@ -17,7 +16,6 @@ app = TimeSeries(key = apiKey, output_format = 'pandas')
 finance_data_short_TSLA, finance_data_short_TSLA_meta_data = app.get_daily_adjusted(symbol = 'TSLA', outputsize = 'full')
 finance_data_short_TSLA['date']=finance_data_short_TSLA.index
 finance_data_short_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_short_TSLA.csv', index = False)
-print(finance_data_short_TSLA)
 
 data= pd.DataFrame()
 i=1
@@ -61,7 +59,6 @@ finance_data_extended_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Docum
 finance_data_short_GM, finance_data_short_GM_meta_data = app.get_daily_adjusted(symbol = 'GM', outputsize = 'full')
 finance_data_short_GM['date']=finance_data_short_GM.index
 finance_data_short_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_short_GM.csv', index = False)
-print(finance_data_short_GM)
 
 data= pd.DataFrame()
 i=1
