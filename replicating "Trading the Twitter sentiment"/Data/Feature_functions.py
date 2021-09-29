@@ -2,6 +2,30 @@ import numpy as np
 import pandas as pd
 #----------------------------
 
+def construct_sentiment_feature_set(twitter_df, feature_df, finance_short_df, finance_long_df):
+    """
+    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
+    - Returns: df_final, same shape as df but with the inputed features
+    """
+    feature_df = number_of_tweets(twitter_df, feature_df)
+    #get daily average score
+    feature_df = daily_average_sentiment(twitter_df, feature_df)
+    #get sentiment volatility
+    feature_df = sentiment_volatility(twitter_df, feature_df)
+    #get sentiment momentum
+    feature_df = sentiment_momentum(twitter_df, feature_df, 5)
+    #get previous day's return
+    previous_day_return(finance_short_df, feature_df)
+    #get daily volume
+    volume(finance_short_df, feature_df)
+    #get price momentum
+    price_momentum(finance_short_df, feature_df, 5)
+    #get price volatility
+    price_volatility(finance_long_df, feature_df)
+
+    return feature_df
+#----------------------------
+
 def number_of_tweets(twitter_df, feature_df):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
@@ -21,12 +45,10 @@ def daily_average_sentiment(twitter_df, feature_df):
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
     """
-    unique_dates = twitter_df['date_short'].unique()
-    unique_dates = pd.DataFrame(data=unique_dates, columns=['date_short'])
-    unique_dates['date_short'] = pd.to_datetime(unique_dates['date_short'])
-    for i, row in unique_dates.iterrows():
-        score = twitter_df.loc[twitter_df['date_short']==row['date_short'],'Stanford_sentiment'].mean()
-        feature_df.loc[feature_df['date'] == row['date_short'], ['daily average sentiment score']] = score
+    df = twitter_df.groupby('date_short', as_index=False)['Stanford_sentiment'].mean()
+    df.date_short = pd.to_datetime(df.date_short)
+    for i, row in df.iterrows():
+        feature_df.loc[feature_df['date'] == row['date_short'], ['daily average sentiment score']] = row['Stanford_sentiment']
 
     return feature_df
 
@@ -84,8 +106,9 @@ def previous_day_return(finance_df, feature_df):
     """
     #previous day return
     for i, row in finance_df.iterrows():
-        rtn = row['open']/row['close']-1
-        feature_df.loc[feature_df['date'] == i, "previous day's return"]= rtn
+        rtn = row['1. open']/row['4. close']-1
+        #print(row[])
+        feature_df.loc[feature_df['date'] == row['date'], "previous day's return"]= rtn
 
     return feature_df
 
@@ -97,7 +120,7 @@ def volume(finance_df, feature_df):
     """
     #previous day return
     for i, row in finance_df.iterrows():
-        feature_df.loc[feature_df['date'] == i, "volume"]= row['volume']
+        feature_df.loc[feature_df['date'] == row['date'], "volume"]= row['6. volume']
 
     return feature_df
 
@@ -108,11 +131,12 @@ def price_momentum(finance_df, feature_df, d):
     - Returns: feature_df, same shape as df but with the inputed features
     """
     df_shifted = finance_df.shift(periods=d)
-    df = (finance_df['close']-df_shifted['close']).to_frame()
+    df = (finance_df['4. close']-df_shifted['4. close']).to_frame()
+    df['date'] = finance_df['date']
     for i,row in df.iterrows():
-        feature_df.loc[feature_df['date'] == i, ['price momentum']] = row['close']
+        feature_df.loc[feature_df['date'] == row['date'], ['price momentum']] = row['4. close']
 
-    return feature_df
+    return df
 
 #----------------------------
 def price_volatility(finance_df, feature_df):
@@ -120,12 +144,10 @@ def price_volatility(finance_df, feature_df):
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
     """
-    finance_df.index = pd.to_datetime(finance_df.index)
-    finance_df = finance_df.groupby([finance_df.index.date]).std()
+    finance_df['time'] = pd.to_datetime(finance_df['time'])
+    finance_df = finance_df.groupby([finance_df['time'].dt.date]).std()
     finance_df['close'] = finance_df['close']**.5
-
-    #feature_df['date'] = feature_df['date'].dt.time
-    for i,row in df.iterrows():
+    for i,row in finance_df.iterrows():
         feature_df.loc[feature_df['date'] == pd.Timestamp(i), ['price volatility']] = row['close']
 
     return feature_df
