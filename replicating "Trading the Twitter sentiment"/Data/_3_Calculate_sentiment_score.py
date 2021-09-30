@@ -18,6 +18,8 @@ def preprocess_tweet(tweet):
     # Remove consequtive question marks
     tweet = re.sub('[?]+[?]', ' ', tweet)
 
+    ## TODO: remove &amp - is HTML code for hyperlink
+
     return tweet
 
 #---------------------

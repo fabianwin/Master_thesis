@@ -9,7 +9,10 @@ def construct_sentiment_feature_set(twitter_df, feature_df, finance_short_df, fi
     """
     feature_df = number_of_tweets(twitter_df, feature_df)
     #get daily average score
-    feature_df = daily_average_sentiment(twitter_df, feature_df)
+    feature_df = daily_average_sentiment_basic(twitter_df, feature_df)
+    feature_df = daily_average_sentiment(twitter_df, feature_df, "Stanford_sentiment")
+    feature_df = daily_average_sentiment(twitter_df, feature_df, "TextBlob_sentiment")
+    feature_df = daily_average_sentiment(twitter_df, feature_df, "Flair_sentiment")
     #get sentiment volatility
     feature_df = sentiment_volatility(twitter_df, feature_df)
     #get sentiment momentum
@@ -42,7 +45,7 @@ def number_of_tweets(twitter_df, feature_df):
 
 #----------------------------
 
-def daily_average_sentiment(twitter_df, feature_df):
+def daily_average_sentiment_basic(twitter_df, feature_df):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
@@ -51,6 +54,21 @@ def daily_average_sentiment(twitter_df, feature_df):
     df.date_short = pd.to_datetime(df.date_short)
     for i, row in df.iterrows():
         feature_df.loc[feature_df['date'] == row['date_short'], ['daily average sentiment score']] = row['Stanford_sentiment']
+
+    return feature_df
+
+#----------------------------
+
+def daily_average_sentiment(twitter_df, feature_df, sentiment_str):
+    """
+    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
+    - Returns: df_final, same shape as df but with the inputed features
+    """
+    df = twitter_df.groupby('date_short', as_index=False)[sentiment_str].mean()
+    df.date_short = pd.to_datetime(df.date_short)
+    row_name = "daily average "+sentiment_str+" score"
+    for i, row in df.iterrows():
+        feature_df.loc[feature_df['date'] == row['date_short'], [row_name]] = row[sentiment_str]
 
     return feature_df
 
