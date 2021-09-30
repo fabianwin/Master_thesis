@@ -24,15 +24,10 @@ Feature_set = Feature_set.append(df,ignore_index=True)
 #construct the feature sets and save them
 Feature_set_Ticker_TSLA = construct_sentiment_feature_set(ticker_set_TSLA, Feature_set, finance_data_short_TSLA, finance_data_extended_TSLA)
 Feature_set_Ticker_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Ticker_TSLA.csv', index = False)
-
-'''
 Feature_set_Product_TSLA = construct_sentiment_feature_set(product_set_TSLA, Feature_set, finance_data_short_TSLA, finance_data_extended_TSLA)
 Feature_set_Product_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_TSLA.csv', index = False)
-'''
 
 Feature_set_Ticker_GM = construct_sentiment_feature_set(ticker_set_GM, Feature_set, finance_data_short_GM, finance_data_extended_GM)
 Feature_set_Ticker_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Ticker_GM.csv', index = False)
-print(Feature_set_Ticker_GM)
-
-#Feature_set_Product_GM = construct_sentiment_feature_set(product_set_GM, Feature_set)
-#Feature_set_Product_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_GM.csv', index = False)
+Feature_set_Product_GM = construct_sentiment_feature_set(product_set_GM, Feature_set, finance_data_short_GM, finance_data_extended_GM)
+Feature_set_Product_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/Feature_set_Product_GM.csv', index = False)

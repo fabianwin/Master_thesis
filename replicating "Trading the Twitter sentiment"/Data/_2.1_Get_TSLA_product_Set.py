@@ -61,7 +61,7 @@ def date_to_epoch_intervall(date):
     return epoch_intervall
 
 #create the dataframe for the product set, same columns like ticker set
-col =["tweet_id","date","username","content","likes","retweets","followers Count","keyword"]
+col =["tweet_id","date_short","username","content","likes","retweets","followers Count","keyword"]
 product_tweets = pd.DataFrame(columns=col)
 keywords = sub_set['keyword'].tolist()
 dates = sub_set['date'].tolist()
