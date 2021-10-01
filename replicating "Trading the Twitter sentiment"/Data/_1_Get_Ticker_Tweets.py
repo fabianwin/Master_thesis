@@ -13,9 +13,9 @@ ticker_tweets_GM = ticker_tweets
 
 #Get Tesla tweets
 maxTweets = 100000  # the number of tweets you require
-keyword = "TSLA"
+keyword = "#TSLA"
 date = 'since:2020-08-01 until:2021-08-30'
-restrictions='min_faves:100 exclude:retweets lang:"en"' #min. 100 likes ,no retweets, in english
+restrictions='min_faves:0 exclude:retweets lang:"en"' #min. 100 likes ,no retweets, in english
 
 for i,tweet in enumerate(sntwitter.TwitterSearchScraper(keyword +' '+ date+' '+restrictions).get_items()) :
         if i == maxTweets :
@@ -28,9 +28,9 @@ ticker_tweets_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com
 #----------------------
 #Get Ford tweets
 maxTweets = 100000  # the number of tweets you require
-keyword = "GM"
+keyword = "#GM"
 date = 'since:2020-08-01 until:2021-08-30'
-restrictions='min_faves:100 exclude:retweets lang:"en"' #min. 100 likes ,no retweets, in english
+restrictions='min_faves:0 exclude:retweets lang:"en"' #min. 100 likes ,no retweets, in english
 
 for i,tweet in enumerate(sntwitter.TwitterSearchScraper(keyword +' '+ date+' '+restrictions).get_items()) :
         if i == maxTweets :

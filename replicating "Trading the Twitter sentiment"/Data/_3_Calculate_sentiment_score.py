@@ -120,9 +120,11 @@ get_stanford_sentiment(ticker_tweets_TSLA)
 get_textblob_sentiment(ticker_tweets_TSLA)
 get_flair_sentiment(ticker_tweets_TSLA)
 
+'''
 get_stanford_sentiment(product_tweets_TSLA)
 get_textblob_sentiment(product_tweets_TSLA)
 get_flair_sentiment(product_tweets_TSLA)
+'''
 
 ticker_tweets_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_TSLA.csv', index = False)
 product_tweets_TSLA.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv', index = False)
@@ -138,9 +140,11 @@ get_stanford_sentiment(ticker_tweets_GM)
 get_textblob_sentiment(ticker_tweets_GM)
 get_flair_sentiment(ticker_tweets_GM)
 
+'''
 get_stanford_sentiment(product_tweets_GM)
 get_textblob_sentiment(product_tweets_GM)
 get_flair_sentiment(product_tweets_GM)
+'''
 
 ticker_tweets_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_GM.csv', index = False)
 product_tweets_GM.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_GM.csv', index = False)
