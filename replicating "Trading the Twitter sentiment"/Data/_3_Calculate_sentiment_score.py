@@ -116,9 +116,11 @@ def sentence_sentiment_df(doc):
 ticker_tweets_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_TSLA.csv')
 product_tweets_TSLA = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_TSLA.csv')
 
+
 get_stanford_sentiment(ticker_tweets_TSLA)
 get_textblob_sentiment(ticker_tweets_TSLA)
 get_flair_sentiment(ticker_tweets_TSLA)
+
 
 '''
 get_stanford_sentiment(product_tweets_TSLA)
@@ -136,11 +138,12 @@ print("TESLA sentiments score are calculated")
 ticker_tweets_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/ticker_set_GM.csv')
 product_tweets_GM = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/product_set_GM.csv')
 
+'''
 get_stanford_sentiment(ticker_tweets_GM)
 get_textblob_sentiment(ticker_tweets_GM)
 get_flair_sentiment(ticker_tweets_GM)
 
-'''
+
 get_stanford_sentiment(product_tweets_GM)
 get_textblob_sentiment(product_tweets_GM)
 get_flair_sentiment(product_tweets_GM)
