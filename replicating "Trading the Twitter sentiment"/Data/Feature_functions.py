@@ -1,13 +1,29 @@
 import numpy as np
 import pandas as pd
+from datetime import date
+import datetime
 #----------------------------
 
-def construct_sentiment_feature_set(twitter_df, feature_df, finance_short_df, finance_long_df):
+def construct_sentiment_feature_set(twitter_df, feature_df, ticker_str):
     """
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
     """
+
+    if ticker_str == "TSLA":
+        finance_short_df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_short_TSLA.csv')
+        finance_long_df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_extended_TSLA.csv')
+
+    if ticker_str ==  "GM":
+        finance_short_df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_short_GM.csv')
+        finance_long_df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/finance_data_extended_GM.csv')
+
+
+
+
     feature_df = number_of_tweets(twitter_df, feature_df)
+
+    """
     #get daily average score
     feature_df = daily_average_sentiment_basic(twitter_df, feature_df)
     feature_df = daily_average_sentiment(twitter_df, feature_df, "Stanford_sentiment")
@@ -17,10 +33,14 @@ def construct_sentiment_feature_set(twitter_df, feature_df, finance_short_df, fi
     feature_df = sentiment_volatility(twitter_df, feature_df)
     #get sentiment momentum
     feature_df = sentiment_momentum(twitter_df, feature_df, 5)
+    """
+
+    #add add_financials
+    add_financials(finance_short_df,feature_df)
+    #get same day's return
+    same_day_return(finance_short_df, feature_df)
     #get previous day's return
     previous_day_return(finance_short_df, feature_df)
-    #get current day Returns
-    current_day_return(finance_short_df, feature_df)
     #get daily volume
     volume(finance_short_df, feature_df)
     #get price momentum
@@ -36,11 +56,34 @@ def number_of_tweets(twitter_df, feature_df):
     - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
     - Returns: df_final, same shape as df but with the inputed features
     """
+    date_count= pd.DataFrame(data=twitter_df['date_short'].value_counts())
+    date_count.index = pd.to_datetime(date_count.index)
+    date_count = date_count.rename(columns={'date_short':'number_of_tweets'})
+    date_count['date'] = date_count.index
+
+    feature_df = pd.merge(feature_df, date_count, how='left', on='date')
+    print(date_count.number_of_tweets.sum())
+    print(feature_df.number_of_tweets.sum())
+
+
+
+    feature_df.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/feature_df_date_count.csv', index = False)
+    date_count.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Trading the twitter sentiment replica/Output/date_count.csv', index = False)
+
+
+
+
+
+
+    """
+
+
     unique_dates = twitter_df['date_short'].unique()
     date_count= pd.DataFrame(data=twitter_df['date_short'].value_counts())
+    date_count.index = pd.to_datetime(date_count.index)
     for i, row in date_count.iterrows():
         feature_df.loc[feature_df['date'] == i, ['number of tweets']] = row['date_short']
-
+    """
     return feature_df
 
 #----------------------------
@@ -105,7 +148,6 @@ def sentiment_momentum(twitter_df, feature_df, d):
         p = (s_now / s_before)*100
         feature_df.loc[feature_df['date'] == row['date'], ['sentiment momentum']] = p
 
-
     return feature_df
 
 #----------------------------
@@ -117,6 +159,28 @@ def sentiment_reversal(twitter_df, feature_df):
     """
     # TO DO
 
+    return feature_df
+
+#----------------------------
+#---------------------
+def add_financials(finance_df, feature_df):
+    for i, row in finance_df.iterrows():
+        feature_df.loc[feature_df['date'] == row['date'], ['open']] = row['1. open']
+        feature_df.loc[feature_df['date'] == row['date'], ['close']] = row['4. close']
+
+    return feature_df
+
+#---------------------
+#----------------------------
+def same_day_return(finance_df, feature_df):
+    """
+    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
+    - Returns: feature_df, same shape as df but with the inputed previous day's return
+    """
+    #previous day return
+    for i, row in finance_df.iterrows():
+        rtn = row['4. close']/row['1. open']-1
+        feature_df.loc[feature_df['date'] == row['date'], "same day return"]= rtn
 
     return feature_df
 
@@ -130,22 +194,7 @@ def previous_day_return(finance_df, feature_df):
     finance_df['1. open'] = finance_df['1. open'].shift(periods=1)
     finance_df['4. close'] = finance_df['4. close'].shift(periods=1)
     for i, row in finance_df.iterrows():
-        rtn = row['1. open']/row['4. close']-1
-        #print(row[])
-        feature_df.loc[feature_df['date'] == row['date'], "previous day's return"]= rtn
-
-    return feature_df
-
-#----------------------------
-def current_day_return(finance_df, feature_df):
-    """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: feature_df, same shape as df but with the inputed previous day's return
-    """
-    #previous day return
-    for i, row in finance_df.iterrows():
-        rtn = row['1. open']/row['4. close']-1
-        #print(row[])
+        rtn = row['4. close']/row['1. open']-1
         feature_df.loc[feature_df['date'] == row['date'], "previous day's return"]= rtn
 
     return feature_df
