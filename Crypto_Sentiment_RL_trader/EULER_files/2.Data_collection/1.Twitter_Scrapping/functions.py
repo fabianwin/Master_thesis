@@ -40,7 +40,8 @@ def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
     twitter_df.dropna(axis=0, how="any")
     #print("Unique Users: ",twitter_df['username'].nunique(),"/", twitter_df.shape[0])
 
-    my_path = os.path.normpath(r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
+    my_path = os.path.normpath(r'Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
+    #r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
     my_file = 'twitter_set_'+keyword+"_"+year+".csv"
     twitter_df.to_csv(os.path.join(my_path, my_file))
 
