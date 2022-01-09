@@ -44,7 +44,7 @@ def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
     #r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
     my_file = 'twitter_set_'+keyword+"_"+year+".csv"
 
-    pathname= os.path.join(my_path, my_file))
+    pathname= os.path.join(my_path, my_file)
     twitter_df.to_csv(pathname)
 
     #twitter_df.to_csv(os.path.join(my_path, my_file))
