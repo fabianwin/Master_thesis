@@ -45,6 +45,7 @@ def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
     my_file = 'twitter_set_'+keyword+"_"+year+".csv"
 
     pathname= os.path.join(my_path, my_file)
+    print(pathname)
     twitter_df.to_csv(pathname)
 
     #twitter_df.to_csv(os.path.join(my_path, my_file))
