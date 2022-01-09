@@ -16,8 +16,10 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #############Global Parameters###################
 #set global parameters for twitterSearchscraper
 maxTweets = 10000000000000
-restrictions='min_faves:20000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
-dates = ['2021', '2020', '2019', '2018', '2017']
+restrictions='min_faves:10000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
+#dates = ['2021', '2020', '2019', '2018', '2017']
+dates = ['2021']
+
 ticker_col =["tweet_id","date_short","date_medium","date_long","username","content","likes","retweets","followers Count"]
 product_col =["tweet_id","date_short","username","content","likes","retweets","followers Count","keyword"]
 ticker_tweets_df = pd.DataFrame(columns=ticker_col)
