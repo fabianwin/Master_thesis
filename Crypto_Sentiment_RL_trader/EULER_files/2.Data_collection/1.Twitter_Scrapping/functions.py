@@ -44,10 +44,10 @@ def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
     #r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
     my_file = 'twitter_set_'+keyword+"_"+year+".csv"
 
-    print(os.path.join(my_path, my_file))
-    twitter_df.to_csv((r'Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets/test.csv'))
-    
-    twitter_df.to_csv(os.path.join(my_path, my_file))
+    pathname= os.path.join(my_path, my_file))
+    twitter_df.to_csv(pathname)
+
+    #twitter_df.to_csv(os.path.join(my_path, my_file))
 
     return twitter_df
 
@@ -64,7 +64,10 @@ def get_ticker_tweets(keyword):
     entire_twitter_df = pd.concat(pdList)
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
     my_file = 'ticker_set_'+keyword+".csv"
-    entire_twitter_df.to_csv(os.path.join(my_path, my_file))
+    file_name = os.path.join(my_path, my_file)
+    entire_twitter_df.to_csv(file_name)
+
+    #entire_twitter_df.to_csv(os.path.join(my_path, my_file))
 
 #---------------------
 def date_to_epoch_intervall(date):
