@@ -16,7 +16,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #############Global Parameters###################
 #set global parameters for twitterSearchscraper
 maxTweets = 10000000000000
-restrictions='min_faves:10000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
+restrictions='min_faves:1000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
 #dates = ['2021', '2020', '2019', '2018', '2017']
 dates = ['2021']
 
