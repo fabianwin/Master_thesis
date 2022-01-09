@@ -16,7 +16,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #############Global Parameters###################
 #set global parameters for twitterSearchscraper
 maxTweets = 10000000000000
-restrictions='min_faves:50000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
+restrictions='min_faves:20000 exclude:retweets lang:"en"' #min. 10 likes ,no retweets, in english
 dates = ['2021', '2020', '2019', '2018', '2017']
 ticker_col =["tweet_id","date_short","date_medium","date_long","username","content","likes","retweets","followers Count"]
 product_col =["tweet_id","date_short","username","content","likes","retweets","followers Count","keyword"]
@@ -38,17 +38,11 @@ def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
             print(tweet.date)
 
     twitter_df.dropna(axis=0, how="any")
-    #print("Unique Users: ",twitter_df['username'].nunique(),"/", twitter_df.shape[0])
 
     my_path = os.path.normpath(r'Data/ticker_sets')
-    #r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/2.Data_collection/1.Twitter_Scrapping/Data/ticker_sets')
     my_file = 'twitter_set_'+keyword+"_"+year+".csv"
-
     pathname= os.path.join(my_path, my_file)
-    print(pathname)
     twitter_df.to_csv(pathname)
-
-    #twitter_df.to_csv(os.path.join(my_path, my_file))
 
     return twitter_df
 
@@ -67,8 +61,6 @@ def get_ticker_tweets(keyword):
     my_file = 'ticker_set_'+keyword+".csv"
     file_name = os.path.join(my_path, my_file)
     entire_twitter_df.to_csv(file_name)
-
-    #entire_twitter_df.to_csv(os.path.join(my_path, my_file))
 
 #---------------------
 def date_to_epoch_intervall(date):
