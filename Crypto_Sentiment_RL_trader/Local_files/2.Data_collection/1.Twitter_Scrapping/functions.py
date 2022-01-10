@@ -11,6 +11,7 @@ from nltk.tokenize import word_tokenize
 import numpy as np
 from pytrends.request import TrendReq
 import urllib3
+import random
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #############Global Parameters###################
@@ -73,8 +74,7 @@ def date_to_epoch_intervall(date):
     return epoch_intervall
 
 #---------------------
-def scrape_product_tweets(keyword):
-    pdList = []
+def scrape_google_trendwords(keyword):
     for year in dates:
         sdate = date(int(year),1,1)
         edate = date(int(year),12,31)
@@ -99,14 +99,23 @@ def scrape_product_tweets(keyword):
                 #print(rising)
                 rising['date'] = i
                 complete = complete.append(rising, ignore_index= True)
+                print(rising)
+            time.sleep(5+random.random())
 
         my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
         my_file = 'keyword_set_'+keyword+"_"+year+".csv"
         complete.to_csv(os.path.join(my_path, my_file))
 
-
         print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"Product set in the year", year)
         print("there are", complete.shape[0]," unique combinations of keywords and dates")
+
+
+def scrape_product_tweets(keyword):
+    pdList = []
+    for year in dates:
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
+        my_file = 'keyword_set_'+keyword+"_"+year+".csv"
+        df = pd.read_csv(os.path.join(my_path, my_file))
 
         #iterate over every row in the complete-set
         df = product_tweets_df
@@ -116,12 +125,12 @@ def scrape_product_tweets(keyword):
             for i,tweet in enumerate(sntwitter.TwitterSearchScraper(related_keyword+' '+ date_in_complete+' '+restrictions).get_items()):
                 if i==maxTweets:
                     break
-                tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=product_tweets_df.columns)
-                #tmp.date = str(tmp.date)[0:10]
-                df = df.append( tmp, ignore_index=True)
+                    tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=product_tweets_df.columns)
+                    #tmp.date = str(tmp.date)[0:10]
+                    df = df.append( tmp, ignore_index=True)
 
-        print("Scraped all tweets based on the received trendwords from year", year)
-        print(" ")
+                    print("Scraped all tweets based on the received trendwords from year", year)
+                    print(" ")
 
         my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/product_sets')
         my_file = 'product_set_'+keyword+"_"+year+".csv"
