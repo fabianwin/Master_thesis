@@ -100,7 +100,7 @@ def scrape_google_trendwords(keyword):
                 rising['date'] = i
                 complete = complete.append(rising, ignore_index= True)
                 print(rising)
-            time.sleep(5+random.random())
+            time.sleep(7+random.random())
 
         my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
         my_file = 'keyword_set_'+keyword+"_"+year+".csv"
@@ -109,7 +109,42 @@ def scrape_google_trendwords(keyword):
         print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"Product set in the year", year)
         print("there are", complete.shape[0]," unique combinations of keywords and dates")
 
+#---------------------
+def scrape_google_trendwords_year(keyword,year):
+    sdate = date(int(year),1,1)
+    edate = date(int(year),12,31)
+    full_date_list = pd.date_range(sdate,edate-timedelta(days=1),freq='d')
 
+    #build the trendreq payload
+    pytrend = TrendReq(retries=2, backoff_factor=0.1, requests_args={'verify':False})
+    #provide your search terms
+    kw_list=[keyword]
+    #for every day we have a tweet in the ticker_set we look up the corresponding related queries on that day
+    complete = pd.DataFrame()
+    #build complete (set with all the related search words from google)
+    for i in full_date_list:
+        i = str(i.date())
+        date_local = i+" "+i
+        pytrend.build_payload(kw_list,timeframe=date_local, cat=0, geo='', gprop='')
+        #get related queries
+        related_queries = pytrend.related_queries()
+        #construct df with trend words
+        rising = list(related_queries.values())[0]['rising']
+        if rising is not None:
+            #print(rising)
+            rising['date'] = i
+            complete = complete.append(rising, ignore_index= True)
+            print(rising)
+        time.sleep(5+random.random())
+
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
+    my_file = 'keyword_set_'+keyword+"_"+year+".csv"
+    complete.to_csv(os.path.join(my_path, my_file))
+
+    print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"Product set in the year", year)
+    print("there are", complete.shape[0]," unique combinations of keywords and dates")
+
+#---------------------
 def scrape_product_tweets(keyword):
     pdList = []
     for year in dates:
