@@ -8,7 +8,7 @@ print("Hello world")
 
 # Create DataFrame
 df = pd.DataFrame(data)
-df.to_csv(r'Crypto_Sentiment_RL_trader/EULER_files/3.Sentiment Analysis/test.csv',index=False)
+df.to_csv(r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/3.Sentiment Analysis/test.csv',index=False)
 
-df = pd.read_csv(r'Crypto_Sentiment_RL_trader/EULER_files/3.Sentiment Analysis/test.csv')
+df = pd.read_csv(r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/3.Sentiment Analysis/test.csv')
 print(df.head())
