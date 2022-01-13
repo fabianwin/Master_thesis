@@ -9,6 +9,3 @@ print("Hello EULER")
 # Create DataFrame
 df = pd.DataFrame(data)
 df.to_csv(r'test.csv',index=False)
-
-#df = pd.read_csv(r'Master_thesis/Crypto_Sentiment_RL_trader/EULER_files/3.Sentiment Analysis/test.csv')
-#print(df.head())
