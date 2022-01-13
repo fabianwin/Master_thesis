@@ -28,5 +28,6 @@ def preprocess(df):
         tweet = row['content']
         tweet = preprocess_tweet(tweet,lang="en")
         df.at[n,'content'] =  tweet
+        print(n)
 
     return df
