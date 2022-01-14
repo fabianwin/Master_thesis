@@ -88,6 +88,7 @@ def scrape_google_trendwords(keyword):
         complete = pd.DataFrame()
         #build complete (set with all the related search words from google)
         for i in full_date_list:
+            print(i)
             i = str(i.date())
             date_local = i+" "+i
             pytrend.build_payload(kw_list,timeframe=date_local, cat=0, geo='', gprop='')
@@ -100,7 +101,10 @@ def scrape_google_trendwords(keyword):
                 rising['date'] = i
                 complete = complete.append(rising, ignore_index= True)
                 print(rising)
-            time.sleep(7+random.random())
+            time.sleep(12+random.random())
+
+        time.sleep(300+10*random.random())
+        print(" ")
 
         my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
         my_file = 'keyword_set_'+keyword+"_"+year+".csv"
@@ -108,7 +112,6 @@ def scrape_google_trendwords(keyword):
 
         print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"Product set in the year", year)
         print("there are", complete.shape[0]," unique combinations of keywords and dates")
-
 #---------------------
 def scrape_google_trendwords_year(keyword,year):
     sdate = date(int(year),1,1)

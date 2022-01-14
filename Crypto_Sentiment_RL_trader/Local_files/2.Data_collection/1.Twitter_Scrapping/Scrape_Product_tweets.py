@@ -21,9 +21,7 @@ for coin in coin_list:
     scrape_google_trendwords(coin)
 """
 
-for coin in classic_coins:
-    scrape_google_trendwords(coin)
-print("Product Set completely scraped")
-#scrape_product_tweets("ETH")
+
+scrape_google_trendwords("ETHEREUM")
 #scrape_product_tweets("BTC")
 #scrape_google_trendwords("BINANCE",2017)
