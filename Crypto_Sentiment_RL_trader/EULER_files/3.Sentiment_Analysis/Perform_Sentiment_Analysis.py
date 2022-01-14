@@ -17,11 +17,11 @@ def perform_sentiment_analysis(df):
     toc_3 = time.perf_counter()
     print(f"Performed this function in {toc_3 - toc_2:0.4f} seconds")
 
-    df = get_finiteautomata_sentiment(df)
+    #df = get_finiteautomata_sentiment(df)
     toc_4 = time.perf_counter()
     print(f"Performed this function in {toc_4 - toc_3:0.4f} seconds")
 
-    df = get_cardiffnlp_sentiment(df)
+    #df = get_cardiffnlp_sentiment(df)
     toc_5 = time.perf_counter()
     print(f"Performed this function in {toc_5 - toc_4:0.4f} seconds")
 
