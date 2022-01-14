@@ -5,7 +5,7 @@ import time
 
 def perform_sentiment_analysis(df):
     toc_0 = time.perf_counter()
-    #df = get_stanford_sentiment(df)
+    df = get_stanford_sentiment(df)
     toc_1 = time.perf_counter()
     print(f"Performed Stanford Sentiment  in {toc_1 - toc_0:0.4f} seconds")
 
