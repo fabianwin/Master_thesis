@@ -13,11 +13,11 @@ def perform_sentiment_analysis(df):
     toc_2 = time.perf_counter()
     print(f"Performed Textblob Sentiment in {toc_2 - toc_1:0.4f} seconds")
 
-    #df = get_flair_sentiment(df)
+    df = get_flair_sentiment(df)
     toc_3 = time.perf_counter()
     print(f"Performed Flair Sentiment in {toc_3 - toc_2:0.4f} seconds")
 
-    #df = get_finiteautomata_sentiment(df)
+    df = get_finiteautomata_sentiment(df)
     toc_4 = time.perf_counter()
     print(f"Performed Finiteautomata Sentiment in {toc_4 - toc_3:0.4f} seconds")
 
