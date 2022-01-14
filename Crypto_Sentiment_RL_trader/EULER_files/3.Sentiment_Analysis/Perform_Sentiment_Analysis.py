@@ -32,7 +32,7 @@ def perform_sentiment_analysis(df):
 
 #load dataframe
 btc_df = pd.read_csv(r'ticker_set_#BTC.csv')
-btc_df = btc_df.head(100)
+
 
 btc_df = perform_sentiment_analysis(btc_df)
 btc_df.to_csv(r'ticker_set_#BTC_sentiment.csv', index = False)
