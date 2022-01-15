@@ -119,7 +119,8 @@ def scrape_google_trendwords_year(keyword,year):
     full_date_list = pd.date_range(sdate,edate-timedelta(days=1),freq='d')
 
     #build the trendreq payload
-    pytrend = TrendReq(retries=2, backoff_factor=0.1, requests_args={'verify':False})
+    #pytrend = TrendReq(retries=2, backoff_factor=0.1, requests_args={'verify':False})
+    pytrend = TrendReq()
     #provide your search terms
     kw_list=[keyword]
     #for every day we have a tweet in the ticker_set we look up the corresponding related queries on that day
@@ -138,7 +139,6 @@ def scrape_google_trendwords_year(keyword,year):
             rising['date'] = i
             complete = complete.append(rising, ignore_index= True)
             print(rising)
-        time.sleep(5+random.random())
 
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets')
     my_file = 'keyword_set_'+keyword+"_"+year+".csv"
