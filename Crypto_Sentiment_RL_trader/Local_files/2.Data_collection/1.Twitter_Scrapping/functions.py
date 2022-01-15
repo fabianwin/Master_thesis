@@ -119,8 +119,8 @@ def scrape_google_trendwords_year(keyword,year):
     full_date_list = pd.date_range(sdate,edate-timedelta(days=1),freq='d')
 
     #build the trendreq payload
-    #pytrend = TrendReq(retries=2, backoff_factor=0.1, requests_args={'verify':False})
-    pytrend = TrendReq()
+    pytrend = TrendReq(retries=2, backoff_factor=0.1, requests_args={'verify':False})
+    #pytrend = TrendReq()
     #provide your search terms
     kw_list=[keyword]
     #for every day we have a tweet in the ticker_set we look up the corresponding related queries on that day

@@ -10,7 +10,7 @@ def perform_sentiment_analysis(df):
     toc_1 = time.perf_counter()
     print(f"Performed Stanford Sentiment  in {toc_1 - toc_0:0.4f} seconds")
 
-    df = get_textblob_sentiment(df)
+    #df = get_textblob_sentiment(df)
     toc_2 = time.perf_counter()
     print(f"Performed Textblob Sentiment in {toc_2 - toc_1:0.4f} seconds")
 

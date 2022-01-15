@@ -18,9 +18,9 @@ print("Product Set completely scraped")
 
 
 
-#scrape_google_trendwords("CARDANO")
+scrape_google_trendwords("RIPPLE")
 #scrape_product_tweets("BTC")
-scrape_google_trendwords_year("CARDANO",2017)
+#scrape_google_trendwords_year("CARDANO",2017)
 
 """
 #-----------Merge Datasets together
