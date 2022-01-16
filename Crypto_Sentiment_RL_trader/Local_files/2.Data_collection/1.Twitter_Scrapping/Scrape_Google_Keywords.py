@@ -18,9 +18,8 @@ print("Product Set completely scraped")
 
 
 
-scrape_google_trendwords("RIPPLE")
-#scrape_product_tweets("BTC")
-#scrape_google_trendwords_year("CARDANO",2017)
+scrape_google_trendwords("BINANCE")
+
 
 """
 #-----------Merge Datasets together
@@ -40,5 +39,5 @@ def merge_Sets(keyword):
     entire_twitter_df.to_csv(os.path.join(my_path, my_file))
 
 
-merge_Sets("DOGECOIN")
+merge_Sets("SHIBA INU")
 """
