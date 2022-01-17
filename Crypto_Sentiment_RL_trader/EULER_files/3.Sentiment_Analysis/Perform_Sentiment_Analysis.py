@@ -31,6 +31,7 @@ def perform_sentiment_analysis(df):
 
 
 #load dataframe
-df = pd.read_csv(r'ticker_set_#SOL.csv')
+df = pd.read_csv(r'ticker_set_#DOGE.csv')
 df = perform_sentiment_analysis(df)
-df.to_csv(r'ticker_set_#SOL_sentiment.csv', index = False)
+df = df.head(50)
+df.to_csv(r'ticker_set_#DOGE_sentiment.csv', index = False)
