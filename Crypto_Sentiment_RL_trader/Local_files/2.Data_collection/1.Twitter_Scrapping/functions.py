@@ -66,13 +66,49 @@ def get_ticker_tweets(keyword):
 def date_to_epoch_intervall(date):
     date_time_1 = str(date)+' 00:00:00-GMT'
     date_time_2 = str(date)+' 23:59:59-GMT'
-    pattern = '%Y-%m-%d %H:%M:%S-%Z'
-    epoch_1 = time.mktime(time.strptime(date_time_1, pattern))
-    epoch_2 = time.mktime(time.strptime(date_time_2, pattern))
+    pattern_ymd = '%Y-%m-%d %H:%M:%S-%Z'
+    pattern_dmy = '%d.%m.%y %H:%M:%S-%Z'
+
+    epoch_1 = time.mktime(time.strptime(date_time_1, pattern_dmy))
+    epoch_2 = time.mktime(time.strptime(date_time_2, pattern_dmy))
     epoch_intervall = 'since_time:'+str(epoch_1)[0:10]+' until_time:'+str(epoch_2)[0:10]
+    print(epoch_intervall)
 
     return epoch_intervall
 
+
+
+#---------------------
+def scrape_product_tweets(keyword):
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
+    my_file = 'keyword_set_'+keyword+".csv"
+    keyword_df = pd.read_csv(os.path.join(my_path, my_file))
+
+    print(keyword_df['date'])
+    print(keyword_df.shape)
+    keyword_df = keyword_df.dropna(axis=0, how="any")
+    print(keyword_df.shape)
+    keyword_df = filter_google_queries(keyword, keyword_df)
+    print(keyword_df.shape)
+
+    #iterate over every row in the complete-set
+    df = product_tweets_df
+    for n,row in keyword_df.iterrows():
+        print(row['date'])
+        date_of_keyword = date_to_epoch_intervall(row['date'])
+        related_keyword = row['query']
+        for i,tweet in enumerate(sntwitter.TwitterSearchScraper(related_keyword+' '+date_of_keyword+' '+restrictions).get_items()):
+            if i==maxTweets:
+                break
+            tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=product_tweets_df.columns)
+            print(tweet.date)
+            df = df.append( tmp, ignore_index=True)
+
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
+    my_file = 'product_set_'+keyword+".csv"
+    df.to_csv(os.path.join(my_path, my_file))
+
+    print("Scraped all tweets based on the received trendwords for", keyword)
 #---------------------
 def scrape_google_trendwords(keyword):
     for year in dates:
@@ -130,36 +166,3 @@ def filter_google_queries(keyword,df_tweets):
     len_list.append(len(df_tweets))
 
     return df_tweets
-
-#---------------------
-def scrape_product_tweets(keyword):
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
-    my_file = 'keyword_set_'+keyword+".csv"
-    keyword_df = pd.read_csv(os.path.join(my_path, my_file))
-
-
-    print(keyword_df.shape)
-    keyword_df = keyword_df.dropna(axis=0, how="any")
-    print(keyword_df.shape)
-    keyword_df = filter_google_queries(keyword, keyword_df)
-    print(keyword_df.shape)
-
-
-    #iterate over every row in the complete-set
-    df = product_tweets_df
-    for n,row in keyword_df.iterrows():
-        date_of_keyword = date_to_epoch_intervall(row['date'])
-        related_keyword = row['query']
-        for i,tweet in enumerate(sntwitter.TwitterSearchScraper(related_keyword+' '+date_of_keyword+' '+restrictions).get_items()):
-            if i==maxTweets:
-                break
-            tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=product_tweets_df.columns)
-            print(tweet.date)
-            df = df.append( tmp, ignore_index=True)
-
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
-    my_file = 'product_set_'+keyword+".csv"
-    df.to_csv(os.path.join(my_path, my_file))
-
-    print("Scraped all tweets based on the received trendwords for", keyword)
-#---------------------
