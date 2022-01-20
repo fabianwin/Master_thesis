@@ -20,7 +20,6 @@ classic_coins = ['#BTC', '#ETH']
 venture_capital_backed_coins = ['#BNB','#SOL', '#ADA', '#XRP']
 community_driven_coins = ['#DOGE', '#SHIB']
 coin_list = classic_coins + venture_capital_backed_coins + community_driven_coins
-venture_capital_backed_coins = ['#BNB']
 
 for coin in venture_capital_backed_coins:
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
