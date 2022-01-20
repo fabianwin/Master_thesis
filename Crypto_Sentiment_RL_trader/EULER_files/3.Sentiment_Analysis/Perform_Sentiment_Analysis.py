@@ -7,6 +7,7 @@ def perform_sentiment_analysis(df):
     toc_0 = time.perf_counter()
     #df = get_stanford_sentiment(df)
     # does probably not work because email adress in one of the tweets! New preprocessing funciton should fix it
+
     toc_1 = time.perf_counter()
     print(f"Performed Stanford Sentiment  in {toc_1 - toc_0:0.4f} seconds")
 
@@ -20,7 +21,7 @@ def perform_sentiment_analysis(df):
 
     df = get_finiteautomata_sentiment(df)
     toc_4 = time.perf_counter()
-    print(f"Performed Finiteautomata Sentiment in {toc_4 - toc_3:0.4f} seconds")
+    #print(f"Performed Finiteautomata Sentiment in {toc_4 - toc_3:0.4f} seconds")
 
     #df = get_cardiffnlp_sentiment(df)
     toc_5 = time.perf_counter()
@@ -32,6 +33,6 @@ def perform_sentiment_analysis(df):
 
 #load dataframe
 df = pd.read_csv(r'ticker_set_preprocessed_#BTC.csv')
-df = df.head(500)
+df = df.head(5)
 df = perform_sentiment_analysis(df)
 df.to_csv(r'ticker_set_sentiment_#BTC.csv', index = False)

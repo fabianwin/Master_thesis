@@ -89,10 +89,14 @@ def sentence_sentiment_df(doc):
 def get_finiteautomata_sentiment(df):
     analyzer = create_analyzer(task="sentiment", lang="en")
     df['finiteautomata_sentiment'] = "NaN"
+    df['finiteautomata_sentiment_prob'] = "NaN"
     for index, row in df.iterrows():
         text = row['content']
         result = analyzer.predict(text)
-        df.at[index,'finiteautomata_sentiment'] =  result.output
+        prob = max(list(result.probas.values()))
+        out = result.output
+        df.at[index,'finiteautomata_sentiment'] =  out
+        df.at[index,'finiteautomata_sentiment_prob'] =  prob
 
     return df
 
