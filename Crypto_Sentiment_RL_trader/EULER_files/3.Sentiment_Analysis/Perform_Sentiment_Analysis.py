@@ -31,6 +31,6 @@ def perform_sentiment_analysis(df):
 
 
 #load dataframe
-df = pd.read_csv(r'ticker_set_preprocessed_#SHIB.csv')
+df = pd.read_csv(r'ticker_set_preprocessed_#XRP.csv')
 df = perform_sentiment_analysis(df)
-df.to_csv(r'ticker_set_sentiment_#SHIB.csv', index = False)
+df.to_csv(r'ticker_set_sentiment_#XRP.csv', index = False)
