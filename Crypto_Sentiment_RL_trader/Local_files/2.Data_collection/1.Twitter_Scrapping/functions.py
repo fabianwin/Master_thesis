@@ -76,8 +76,6 @@ def date_to_epoch_intervall(date):
 
     return epoch_intervall
 
-
-
 #---------------------
 def scrape_product_tweets(keyword):
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')

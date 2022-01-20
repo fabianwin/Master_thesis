@@ -97,6 +97,13 @@ def get_finiteautomata_sentiment(df):
     return df
 
 #----------------------------------------------
+def preprocess(text):
+    new_text = []
+    for t in text.split(" "):
+        t = 'http' if t.startswith('http') else t
+        new_text.append(t)
+    return " ".join(new_text)
+
 def get_cardiffnlp_sentiment(df):
     # Tasks:
     # emoji, emotion, hate, irony, offensive, sentiment
@@ -122,6 +129,10 @@ def get_cardiffnlp_sentiment(df):
     df['cardiffnlp_sentiment'] = "NaN"
     for index, row in df.iterrows():
         text = row['content']
+        print(type(text))
+        text = preprocess(text)
+        print(type(text))
+
         encoded_input = tokenizer(text, return_tensors='pt')
         output = model(**encoded_input)
         scores = output[0][0].detach().numpy()
