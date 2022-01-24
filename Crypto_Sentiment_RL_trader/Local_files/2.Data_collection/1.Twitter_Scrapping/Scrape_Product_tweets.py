@@ -8,12 +8,6 @@ community_driven_coins = ['DOGECOIN', 'SHIBA_INU']
 coin_list = classic_coins + venture_capital_backed_coins + community_driven_coins
 
 
-
-#coins with date ordered in the strucutre: %Y-%m-%d
-ymd_coins = ['BITCOIN', 'CARDANO', 'DOGECOIN', 'RIPPLE','SOLANA']
-#coins with date ordered in the strucutre: %d.%m.%y
-dmy_coins = ['BINANCE','ETHEREUM','SHIBA_INU']
-"""
 for coin in coin_list:
     scrape_product_tweets(coin)
 

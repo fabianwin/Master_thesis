@@ -1,10 +1,25 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score,precision_score,f1_score, confusion_matrix
-from functions import normalize, round
+from functions import preprocess, perform_sentiment_analysis, normalize, round
 
-eisner_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/3.Sentiment_Analysis/eisner_tweets.csv')
+"""
+#step 1: preprocess
+eisner_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_original.csv')
+eisner_tweets = preprocess(eisner_tweets)
+eisner_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_preprocessed.csv', index = False)
 
+
+#step 2: calculate Sentiment scores
+eisner_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_preprocessed.csv')
+print(eisner_tweets.dtypes)
+eisner_tweets = perform_sentiment_analysis(eisner_tweets)
+eisner_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_sentiment_scores.csv', index = False)
+"""
+
+#step 3: adjust scores and calculate scores
+#load dataframe
+eisner_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_sentiment_scores.csv')
 #Angleichung Stanford_sentiment
 eisner_tweets = round(eisner_tweets, 'Stanford_sentiment')
 eisner_tweets["Stanford_sentiment rounded"].replace({0: -1, 1: 0, 2:1}, inplace=True)
@@ -17,9 +32,7 @@ eisner_tweets = round(eisner_tweets, 'Flair_sentiment normalized')
 eisner_tweets["finiteautomata_sentiment"].replace({"NEG": -1, "NEU": 0, "POS":1}, inplace=True)
 #Angleichung cardiffnlp_sentiment
 eisner_tweets["cardiffnlp_sentiment"].replace({"negative": -1, "neutral": 0, "positive":1}, inplace=True)
-
-
-eisner_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/3.Sentiment_Analysis/eisner_tweets_adjusted.csv', index = False)
+eisner_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/eisner_tweets_sentiment_scores_adjusted.csv', index = False)
 
 
 y_true = eisner_tweets['label']
@@ -33,8 +46,8 @@ y_cardiffnlp = eisner_tweets['cardiffnlp_sentiment']
 print(f1_score(y_true, y_stanford, average="macro"))
 print(f1_score(y_true, y_textblob, average="macro"))
 print(f1_score(y_true, y_flair, average="macro"))
-print(f1_score(y_true, y_finiteautomata, average="macro"))
-print(f1_score(y_true, y_cardiffnlp, average="macro"))
+print("y_finiteautomata",f1_score(y_true, y_finiteautomata, average="macro"))
+print("cardiffnlp", f1_score(y_true, y_cardiffnlp, average="macro"))
 print("  ")
 
 print(accuracy_score(y_true, y_stanford))

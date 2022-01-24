@@ -1,6 +1,6 @@
-import stanza
 import re
 import string
+import emoji
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
@@ -18,10 +18,11 @@ def preprocess_tweets(df):
         tweet = re.sub('[?]+[?]', ' ', tweet)
         # Remove &amp - is HTML code for hyperlink
         tweet = re.sub(r'\&amp;','&', tweet)
+        #Replace emoji with text
+        tweet = emoji.demojize(text, language="en", delimiters=(" ", " "))
         df.at[n,'content'] =  tweet
 
     return df
-
 #----------------------------------------------
 def preprocess(df):
     for n,row in df.iterrows():
