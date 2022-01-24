@@ -38,7 +38,9 @@ df2 =  df.tail(crit)
 
 print("df size", df.shape)
 print("df1 size", df1.shape)
+print(df1.head())
 print("df2 size", df2.shape)
+print(df2.head())
 
 """
 df = perform_sentiment_analysis(df)
