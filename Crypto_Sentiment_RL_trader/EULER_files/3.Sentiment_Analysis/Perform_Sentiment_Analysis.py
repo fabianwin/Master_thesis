@@ -36,5 +36,5 @@ crit = int(df.shape[0]/2)
 df1 = df.head(crit)
 df2 =  df.tail(crit)
 
-df = perform_sentiment_analysis(df1)
-df.to_csv(r'ticker_set_sentiment_#BTC.csv', index = False)
+df = perform_sentiment_analysis(df2)
+df.to_csv(r'ticker_set_sentiment_#BTC_2.csv', index = False)
