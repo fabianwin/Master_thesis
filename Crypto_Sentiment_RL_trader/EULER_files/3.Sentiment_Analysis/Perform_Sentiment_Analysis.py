@@ -32,5 +32,13 @@ def perform_sentiment_analysis(df):
 
 #load dataframe
 df = pd.read_csv(r'ticker_set_preprocessed_#BTC.csv')
+crit = df.shape[0]/2
+df1 = df.head(crit)
+df2 =  df.tail(crit)
+
+print("df size", df.shape)
+print("df1 size", df1.shape)
+print("df2 size", df2.shape)
+
 df = perform_sentiment_analysis(df)
 df.to_csv(r'ticker_set_sentiment_#BTC.csv', index = False)
