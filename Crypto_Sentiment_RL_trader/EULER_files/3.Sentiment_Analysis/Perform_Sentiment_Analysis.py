@@ -31,6 +31,6 @@ def perform_sentiment_analysis(df):
 
 
 #load dataframe
-df = pd.read_csv(r'product_set_preprocessed_SHIBA_INU.csv')
+df = pd.read_csv(r'product_set_preprocessed_DOGECOINcsv')
 df = perform_sentiment_analysis(df)
-df.to_csv(r'product_set_sentiment_SHIBA_INU.csv', index = False)
+df.to_csv(r'product_set_sentiment_DOGECOIN.csv', index = False)
