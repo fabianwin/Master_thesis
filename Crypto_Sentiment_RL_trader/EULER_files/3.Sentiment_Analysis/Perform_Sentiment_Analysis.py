@@ -31,6 +31,6 @@ def perform_sentiment_analysis(df):
 
 
 #load dataframe
-df = pd.read_csv(r'product_set_preprocessed_BITCOIN.csv')
+df = pd.read_csv(r'product_set_preprocessed_ETHEREUM.csv')
 df = perform_sentiment_analysis(df)
-df.to_csv(r'product_set_sentiment_BITCOIN.csv', index = False)
+df.to_csv(r'product_set_sentiment_ETHEREUM.csv', index = False)

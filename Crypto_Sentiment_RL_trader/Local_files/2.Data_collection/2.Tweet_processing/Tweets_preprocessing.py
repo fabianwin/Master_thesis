@@ -30,13 +30,11 @@ print("All Ticker sets are preprocessed")
 classic_coins = ['BITCOIN', 'ETHEREUM']
 venture_capital_backed_coins = ['BINANCE', 'CARDANO', 'RIPPLE']
 community_driven_coins = ['DOGECOIN', 'SHIBA_INU']
-#coin_list_product = classic_coins + venture_capital_backed_coins + community_driven_coins
-coin_list_product = venture_capital_backed_coins + community_driven_coins
+coin_list_product = classic_coins + venture_capital_backed_coins + community_driven_coins
 
 for coin in coin_list_product:
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
     my_file = 'product_set_'+coin+".csv"
-    print(my_file)
 
     df = pd.read_csv(os.path.join(my_path, my_file))
     df = df.dropna(axis=0, how='any', inplace=False)
