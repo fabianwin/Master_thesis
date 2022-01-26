@@ -8,14 +8,14 @@ def perform_sentiment_analysis(df):
     #df = get_stanford_sentiment(df)
     # does probably not work because email adress in one of the tweets! New preprocessing funciton should fix it
 
-    toc_1 = time.perf_counter()
+    #toc_1 = time.perf_counter()
     print(f"Performed Stanford Sentiment  in {toc_1 - toc_0:0.4f} seconds")
 
-    df = get_textblob_sentiment(df)
+    #df = get_textblob_sentiment(df)
     toc_2 = time.perf_counter()
     print(f"Performed Textblob Sentiment in {toc_2 - toc_1:0.4f} seconds")
 
-    df = get_flair_sentiment(df)
+    #df = get_flair_sentiment(df)
     toc_3 = time.perf_counter()
     print(f"Performed Flair Sentiment in {toc_3 - toc_2:0.4f} seconds")
 
@@ -31,6 +31,6 @@ def perform_sentiment_analysis(df):
 
 
 #load dataframe
-df = pd.read_csv(r'product_set_preprocessed_ETHEREUM.csv')
+df = pd.read_csv(r'product_set_preprocessed_BITCOIN.csv')
 df = perform_sentiment_analysis(df)
-df.to_csv(r'product_set_sentiment_ETHEREUM.csv', index = False)
+df.to_csv(r'product_set_sentiment_BITCOIN.csv', index = False)
