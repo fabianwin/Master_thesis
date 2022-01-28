@@ -11,15 +11,15 @@ def perform_sentiment_analysis(df):
     toc_1 = time.perf_counter()
     print(f"Performed Stanford Sentiment  in {toc_1 - toc_0:0.4f} seconds")
 
-    #df = get_textblob_sentiment(df)
+    df = get_textblob_sentiment(df)
     toc_2 = time.perf_counter()
     print(f"Performed Textblob Sentiment in {toc_2 - toc_1:0.4f} seconds")
 
-    #df = get_flair_sentiment(df)
+    df = get_flair_sentiment(df)
     toc_3 = time.perf_counter()
     print(f"Performed Flair Sentiment in {toc_3 - toc_2:0.4f} seconds")
 
-    df = get_finiteautomata_sentiment(df)
+    #df = get_finiteautomata_sentiment(df)
     toc_4 = time.perf_counter()
     #print(f"Performed Finiteautomata Sentiment in {toc_4 - toc_3:0.4f} seconds")
 
@@ -32,8 +32,5 @@ def perform_sentiment_analysis(df):
 
 #load dataframe
 df = pd.read_csv(r'ticker_set_preprocessed_#BTC.csv')
-crit = int(df.shape[0]/2)
-df1 = df.head(crit)
-df2 =  df.tail(crit)
-df = perform_sentiment_analysis(df1)
-df.to_csv(r'ticker_set_sentiment_#BTC_1.csv', index = False)
+df = perform_sentiment_analysis(df)
+df.to_csv(r'ticker_set_sentiment_#BTC.csv', index = False)
