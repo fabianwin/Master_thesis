@@ -4,6 +4,7 @@ from alpha_vantage.timeseries import TimeSeries
 import time
 
 #############Global Parameters###################
+"""
 apiKey = 'TCBN46GY5MD7ASKD'
 ts = TimeSeries(key = apiKey, output_format = 'csv')
 app = TimeSeries(key = apiKey, output_format = 'pandas')
@@ -24,22 +25,15 @@ from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.cryptocurrencies import CryptoCurrencies
 from alpha_vantage.foreignexchange import ForeignExchange
 
-"""
 ts = TimeSeries(key = apiKey, output_format='pandas')
 data = ts.get_daily_adjusted('MSFT', outputsize='full')
 print(data)
-"""
+
 cc = CryptoCurrencies(key=apiKey, output_format='pandas')
 data = cc.get_digital_currency_monthly(symbol='BTC', market='USD')
 print(data)
 
 
-
-
-
-
-
-"""
 cc = CryptoCurrencies(key=apiKey, output_format='pandas')
 data, meta_data = cc.get_digital_currency_daily(symbol='BTC', market='CNY')
 print(data)
@@ -62,19 +56,57 @@ def download_data(config):
     print("Number data points", num_data_points, display_date_range)
 
     return data_date, data_close_price, num_data_points, display_date_range
-
+#############Functions###########################
+from messari.messari import Messari
+messari = Messari('f7c66dc1-8cc1-48a5-a61e-2a81f17b1e5d')
+assets = ['bitcoin']
+metrics = ['price','txn.fee.avg']
+metric = 'price'
 """
-data_date, data_close_price, num_data_points, display_date_range = download_data(config)
-
-# plot
-
-fig = figure(figsize=(25, 5), dpi=80)
-fig.patch.set_facecolor((1.0, 1.0, 1.0))
-plt.plot(data_date, data_close_price, color=config["plots"]["color_actual"])
-xticks = [data_date[i] if ((i%config["plots"]["xticks_interval"]==0 and (num_data_points-i) > config["plots"]["xticks_interval"]) or i==num_data_points-1) else None for i in range(num_data_points)] # make x ticks nice
-x = np.arange(0,len(xticks))
-plt.xticks(x, xticks, rotation='vertical')
-plt.title("Daily close price for " + config["alpha_vantage"]["symbol"] + ", " + display_date_range)
-plt.grid(b=None, which='major', axis='y', linestyle='--')
-plt.show()
+txn.fee.avg
+txn.cnt
+txn.tsfr.val.adj
+sply.circ
+mcap.circ
+reddit.subscribers
+iss.rate
+mcap.realized
+bitwise.volume
+txn.tsfr.val.avg
+act.addr.cnt
+fees.ntv
+exch.flow.in.usd.incl
+blk.size.byte
+txn.tsfr.val.med
+exch.flow.in.ntv.incl
+exch.flow.out.usd
+txn.vol
+exch.flow.out.ntv.incl
+exch.flow.out.usd.incl
+txn.fee.med
+min.rev.ntv
+exch.sply.usd
+diff.avg
+daily.shp
+txn.tsfr.cnt
+exch.flow.in.ntv
+new.iss.usd
+mcap.dom
+daily.vol
+reddit.active.users
+exch.sply
+nvt.adj
+exch.flow.out.ntv
+min.rev.usd
+bitwise.price
+new.iss.ntv
+blk.size.bytes.avg
+hashrate
+exch.flow.in.usd
+price
+real.vol
 """
+start = '2017-01-01'
+end = '2021-12-31'
+timeseries_df = messari.get_metric_timeseries(asset_slugs=assets, asset_metric=metrics, start=start, end=end, interval='1d')
+timeseries_df.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/Tests/messari.csv', index = True)
