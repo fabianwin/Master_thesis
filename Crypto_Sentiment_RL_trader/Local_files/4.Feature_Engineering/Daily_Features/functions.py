@@ -108,7 +108,7 @@ def construct_sentiment_feature_set(twitter_df, symbol, set_description):
     my_file = 'feature_set_'+symbol+".csv"
     Feature_set.to_csv(os.path.join(my_path, my_file))
 
-    return
+    return Feature_set
 #Sentiment functions
 #----------------------------
 def number_of_tweets(twitter_df, feature_df, set_description):
