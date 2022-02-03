@@ -28,7 +28,6 @@ def merge(symbol):
     ticker_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
     ticker_data = construct_sentiment_feature_set(ticker_data, symbol,"ticker")
 
-
     #get product sentiment
     my_file = 'product_set_sentiment_'+symbol+".csv"
     product_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
@@ -43,10 +42,7 @@ def merge(symbol):
     #merged_df.to_csv(os.path.join(my_path, my_file))
 
 #################Main###########################
-merge("BTC")
-"""
 coins=['ADA', 'BNB', 'BTC','DOGE','ETH', 'XRP']
 
 for coin in coins:
     merge(coin)
-"""
