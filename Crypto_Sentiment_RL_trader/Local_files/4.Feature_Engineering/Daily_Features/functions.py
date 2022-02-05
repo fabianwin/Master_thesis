@@ -9,80 +9,21 @@ from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 #----------------------------
 # GLobal Parameters
-#---------------------
+#----------------------------
 #sentiment columnvalues
 sent_str_1 = "TextBlob_sentiment"
 sent_str_2 = "Flair_sentiment"
 sent_str_3 = "finiteautomata_sentiment"
-#---------------------
-def get_lppls_graphs(symbol):
-    # read example dataset into df
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
-    my_file = 'finance_data_'+symbol+".csv"
-    data = pd.read_csv(os.path.join(my_path, my_file))
-    data.dropna(axis=0, how='any',subset=['Price (Close)'], inplace=True)
-
-    # convert time to ordinal
-    time = [pd.Timestamp.toordinal(dt.strptime(t1, '%d.%m.%y')) for t1 in data['Date']]
-
-    # create list of observation data
-    price = np.log(data['Price (Close)'].values)
-
-    # create observations array (expected format for LPPLS observations)
-    observations = np.array([time, price])
-
-    # set the max number for searches to perform before giving-up
-    # the literature suggests 25
-    MAX_SEARCHES = 25
-
-    # instantiate a new LPPLS model with the Nasdaq Dot-com bubble dataset
-    lppls_model = LPPLS(observations=observations)
-
-    # fit the model to the data and get back the params
-    tc, m, w, a, b, c, c1, c2, O, D = lppls_model.fit(MAX_SEARCHES)
-    lppls_model.plot_fit(symbol)
-
-    if __name__ == '__main__':
-        print('compute LPPLS conf scores fresh')
-        # compute the confidence indicator
-        res = lppls_model.mp_compute_nested_fits(
-            workers=CPU_CORES,
-            window_size=126*3,
-            smallest_window_size=21,
-            outer_increment=1,
-            inner_increment=5,
-            max_searches=25,
-            # filter_conditions_config={} # not implemented in 0.6.x
-        )
-        res_df = lppls_model.compute_indicators(res)
-        res_df['time'] = [pd.Timestamp.fromordinal(int(t1)) for t1 in res_df['time']]
-        res_df.set_index('time', inplace=True)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
-        my_file = 'LPPLS_CONF_CSV_'+symbol+".csv"
-        res_df.to_csv(os.path.join(my_path, my_file))
-
-        lppls_model.plot_confidence_indicators(res, symbol)
-        # should give a plot like the following...
 #----------------------------
-# Complete Functions
-#---------------------
+#Sentiment functions
+#----------------------------
 def construct_sentiment_feature_set(twitter_df, symbol, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Parameters: twitter_df which has all the scraped tweets and symbol and set_description is used to define which Coin and ticker/product set is underlying
+    - Returns: df_final, a df which has relevant features (scaled) descriping the sentiment of ticker/product set
     """
-    col =["same_hour_return","sentiment volatility", "sentiment momentum"]
     df = pd.DataFrame({'date': pd.date_range(start="2017-01-01",end="2021-12-31")})
     Feature_set = df.reindex(columns = df.columns.tolist())
-
-    """
-    ###keep temporaraily
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering')
-    my_file = 'feature_set_'+symbol+".csv"
-    date_cols = ["date"]
-    Feature_set = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
-    #######
-    """
 
     #get number of tweets
     Feature_set = number_of_tweets(twitter_df, Feature_set, set_description)
@@ -106,35 +47,15 @@ def construct_sentiment_feature_set(twitter_df, symbol, set_description):
     #get sentiment relative strenght index
     Feature_set = sentiment_RSI(twitter_df, Feature_set, 21,set_description)
 
-    """
-    #add add_financials (open, close, volume)
-    feature_df = add_financials(finance_long_df,feature_df)
-    #get same day's return
-    feature_df = same_hour_return(feature_df)
-    #get same day's return
-    feature_df = next_hour_return (feature_df)
-    #get previous day's return
-    feature_df = previous_hour_return(feature_df)
-    #get price momentum
-    feature_df = price_momentum(feature_df, 15)
-    #get price volatility
-    feature_df = price_volatility(feature_df)
-
-    pd.set_option('display.max_columns', None)
-    print(feature_df)
-    pd.reset_option('display.max_rows')
-    """
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering')
-    my_file = 'feature_set_'+symbol+".csv"
+    my_file = set_description+'_sentiment_feature_set_'+symbol+".csv"
     Feature_set.to_csv(os.path.join(my_path, my_file))
 
     return Feature_set
-#Sentiment functions
 #----------------------------
 def number_of_tweets(twitter_df, feature_df, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average number of tweets per day (scaled)
     """
     date_count= pd.DataFrame(data=twitter_df['date_short'].value_counts())
     date_count.index = pd.to_datetime(date_count.index)
@@ -151,12 +72,10 @@ def number_of_tweets(twitter_df, feature_df, set_description):
 #----------------------------
 def avg_likes_of_tweets(twitter_df, feature_df, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average number of likes of all tweets per day (scaled)
     """
     df = twitter_df.groupby(pd.Grouper(key='date_short',freq='D')).sum()
-    df.index = pd.to_datetime(df.index)
-    feature_df = pd.merge(feature_df, df.likes, how='left',  left_on="date", right_on="date_short")
+    feature_df = pd.merge(feature_df, df.likes, how='left',  left_on="date", right_index=True)
     tweet_number_column_name = set_description+"_number_of_tweets"
     new_column_name = set_description+"_average_number_of_likes"
     feature_df[new_column_name] = feature_df.likes / feature_df[tweet_number_column_name]
@@ -170,8 +89,7 @@ def avg_likes_of_tweets(twitter_df, feature_df, set_description):
 #----------------------------
 def avg_retweets_of_tweets(twitter_df, feature_df, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average number of retweets of all tweets per day (scaled)
     """
     df = twitter_df.groupby(pd.Grouper(key='date_short',freq='D')).sum()
     df.index = pd.to_datetime(df.index)
@@ -189,8 +107,7 @@ def avg_retweets_of_tweets(twitter_df, feature_df, set_description):
 #----------------------------
 def avg_followers_of_tweets(twitter_df, feature_df, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average number of followers of all tweets per day (scaled)
     """
     df = twitter_df.groupby(pd.Grouper(key='date_short',freq='D')).sum()
     df.index = pd.to_datetime(df.index)
@@ -208,8 +125,9 @@ def avg_followers_of_tweets(twitter_df, feature_df, set_description):
 #----------------------------
 def daily_average_sentiment(twitter_df, feature_df, sentiment_str, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average sentiment of a given day. The result is scaled on a scale [-1,1], where -1 represents negative and 1 positive sentiment_MOM
+               Depending on sentiment_str, a different NLP method is used.
+               Currently two different finiteautomata_sentiment-scores exists, as one is taking all neutral tweets in account while the other does not.
     """
     if sentiment_str=="finiteautomata_sentiment":
         twitter_df = get_expectation_value_column(twitter_df,sentiment_str, set_description)
@@ -260,8 +178,7 @@ def daily_average_sentiment(twitter_df, feature_df, sentiment_str, set_descripti
 #----------------------------
 def average_sentiment(feature_df, set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the average over the 3 different NLP methods
     """
     sent_str_11 = set_description+"_"+sent_str_1+"_scaled"
     sent_str_22 = set_description+"_"+sent_str_2+"_scaled"
@@ -274,8 +191,7 @@ def average_sentiment(feature_df, set_description):
 #----------------------------
 def sentiment_volatility(twitter_df, feature_df,set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the daily volatility for each sentiment calculation method
     """
     twitter_df = get_expectation_value_column(twitter_df,sent_str_3, set_description)
     sent_str_33 = sent_str_3+"_expectation_value"
@@ -301,8 +217,7 @@ def sentiment_volatility(twitter_df, feature_df,set_description):
 #----------------------------
 def sentiment_ROC(twitter_df, feature_df, n,set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), n is integer which determines the "look.back-period"
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the rate of change for each sentiment calculaiton method
     """
     array = get_sentiment_array(sent_str_1, sent_str_2, sent_str_3, set_description,'scaled')
     roc_df = feature_df['date']
@@ -320,8 +235,8 @@ def sentiment_ROC(twitter_df, feature_df, n,set_description):
 #----------------------------
 def sentiment_MOM(twitter_df, feature_df, n,set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), d is integer which determines the "look.back-period"
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the momentum for each sentiment calculation method.
+               n is the amount of days we shifted the dataset.
     """
     array = get_sentiment_array(sent_str_1, sent_str_2, sent_str_3, set_description,'scaled')
     mom_df = feature_df['date']
@@ -337,8 +252,8 @@ def sentiment_MOM(twitter_df, feature_df, n,set_description):
 #----------------------------
 def sentiment_RSI(twitter_df, feature_df, n,set_description):
     """
-    - Parameters: twitter_df & feature_df (Both df), d is integer which determines the "look.back-period"
-    - Returns: df_final, same shape as df but with the inputed features
+    - Returns: Feature_set with an additional column describing the Relative Strength Index for each sentiment calculation method.
+               n is the amount of days we shifted the dataset.
     """
     array = get_sentiment_array(sent_str_1, sent_str_2, sent_str_3, set_description,'scaled')
     rsi_df = feature_df['date']
@@ -365,18 +280,44 @@ def sentiment_RSI(twitter_df, feature_df, n,set_description):
     feature_df = pd.merge(feature_df, rsi_df, how='left',  on="date")
 
     return feature_df
-#----------------------------
-def sentiment_reversal(twitter_df, feature_df):
-    """
-    - Parameters: twitter_df & feature_df (Both df), twitter has all the tweets info stored, features need to be extracted and appended to df
-    - Returns: df_final, same shape as df but with the inputed features
-    """
-    # TO DO
 
-    return feature_df
+
+
 #----------------------------
 # Finance Functions
-#---------------------
+#----------------------------
+def construct_finance_feature_set(twitter_df, symbol, set_description):
+    """
+    - Parameters: twitter_df which has all the scraped tweets and symbol and set_description is used to define which Coin and ticker/product set is underlying
+    - Returns: df_final, a df which has relevant features (scaled) descriping the sentiment of ticker/product set
+    """
+    col =["same_hour_return","sentiment volatility", "sentiment momentum"]
+    df = pd.DataFrame({'date': pd.date_range(start="2017-01-01",end="2021-12-31")})
+    Feature_set = df.reindex(columns = df.columns.tolist())
+
+    #add add_financials (open, close, volume)
+    feature_df = add_financials(finance_long_df,feature_df)
+    #get same day's return
+    feature_df = same_hour_return(feature_df)
+    #get same day's return
+    feature_df = next_hour_return (feature_df)
+    #get previous day's return
+    feature_df = previous_hour_return(feature_df)
+    #get price momentum
+    feature_df = price_momentum(feature_df, 15)
+    #get price volatility
+    feature_df = price_volatility(feature_df)
+
+    pd.set_option('display.max_columns', None)
+    print(feature_df)
+    pd.reset_option('display.max_rows')
+
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering')
+    my_file = 'finance_feature_set_'+symbol+".csv"
+    Feature_set.to_csv(os.path.join(my_path, my_file))
+
+    return Feature_set
+#----------------------------
 def add_financials(finance_df, feature_df):
     finance_df.time = pd.to_datetime(finance_df.time, utc=True)
     finance_df = finance_df.rename(columns={'time':'date'})
@@ -447,6 +388,56 @@ def price_volatility(feature_df):
     feature_df = feature_df.drop(['key_0', 'key_1', 'key_2'], axis=1)
 
     return feature_df
+#----------------------------
+def get_lppls_graphs(symbol):
+    # read example dataset into df
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
+    my_file = 'finance_data_'+symbol+".csv"
+    data = pd.read_csv(os.path.join(my_path, my_file))
+    data.dropna(axis=0, how='any',subset=['Price (Close)'], inplace=True)
+
+    # convert time to ordinal
+    time = [pd.Timestamp.toordinal(dt.strptime(t1, '%d.%m.%y')) for t1 in data['Date']]
+
+    # create list of observation data
+    price = np.log(data['Price (Close)'].values)
+
+    # create observations array (expected format for LPPLS observations)
+    observations = np.array([time, price])
+
+    # set the max number for searches to perform before giving-up
+    # the literature suggests 25
+    MAX_SEARCHES = 25
+
+    # instantiate a new LPPLS model with the Nasdaq Dot-com bubble dataset
+    lppls_model = LPPLS(observations=observations)
+
+    # fit the model to the data and get back the params
+    tc, m, w, a, b, c, c1, c2, O, D = lppls_model.fit(MAX_SEARCHES)
+    lppls_model.plot_fit(symbol)
+
+    if __name__ == '__main__':
+        print('compute LPPLS conf scores fresh')
+        # compute the confidence indicator
+        res = lppls_model.mp_compute_nested_fits(
+            workers=CPU_CORES,
+            window_size=126*3,
+            smallest_window_size=21,
+            outer_increment=1,
+            inner_increment=5,
+            max_searches=25,
+            # filter_conditions_config={} # not implemented in 0.6.x
+        )
+        res_df = lppls_model.compute_indicators(res)
+        res_df['time'] = [pd.Timestamp.fromordinal(int(t1)) for t1 in res_df['time']]
+        res_df.set_index('time', inplace=True)
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
+        my_file = 'LPPLS_CONF_CSV_'+symbol+".csv"
+        res_df.to_csv(os.path.join(my_path, my_file))
+
+        lppls_model.plot_confidence_indicators(res, symbol)
+        # should give a plot like the following...
+
 #---------------------
 # Helper Functions
 #---------------------

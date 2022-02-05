@@ -8,6 +8,22 @@ from functions import construct_sentiment_feature_set
 #############Functions###########################
 def merge(symbol):
     #read dataframes
+    #get ticker sentiment
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis')
+    my_file = 'ticker_set_sentiment_#'+symbol+".csv"
+    date_cols = ["date_short"]
+    ticker_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
+    ticker_data = construct_sentiment_feature_set(ticker_data, symbol,"ticker")
+    print(symbol," ticker feature completed")
+
+    #get product sentiment
+    my_file = 'product_set_sentiment_'+symbol+".csv"
+    product_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
+    product_data = construct_sentiment_feature_set(product_data, symbol,"product")
+    print(symbol," product feature completed")
+
+
+    """
     #get coin data
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
     my_file = 'Coin_data_combined_'+symbol+".csv"
@@ -20,17 +36,8 @@ def merge(symbol):
     date_cols = ["time"]
     lppls_data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
     lppls_data_df.drop(['price', '_fits'], axis=1,inplace=True)
+    """
 
-    #get ticker sentiment
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis')
-    my_file = 'ticker_set_sentiment_#'+symbol+".csv"
-    date_cols = ["date_short"]
-    ticker_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
-    ticker_data = construct_sentiment_feature_set(ticker_data, symbol,"ticker")
-
-    #get product sentiment
-    my_file = 'product_set_sentiment_'+symbol+".csv"
-    product_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
 
     #merge DataFrame
     #merged_df = pd.merge(df1, df2, how='left', on='Date')
