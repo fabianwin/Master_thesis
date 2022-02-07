@@ -2,45 +2,55 @@ import pandas as pd
 import numpy as np
 import os
 from functions import construct_sentiment_feature_set, construct_finance_feature_set
-#############Global Parameters###################
-
 
 #############Functions###########################
 def merge(symbol):
     #read dataframes
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/Feature_sets')
+    date_cols = ["date"]
+
     #get ticker sentiment
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis')
-    my_file = 'ticker_set_sentiment_#'+symbol+".csv"
-    date_cols = ["date_short"]
+    my_file = 'scaled_ticker_sentiment_feature_set_'+symbol+".csv"
+    my_scaled_file = 'ticker_sentiment_feature_set_'+symbol+".csv"
     ticker_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
-    ticker_data = construct_sentiment_feature_set(ticker_data, symbol,"ticker")
-    print(symbol," ticker feature completed")
+    scaled_ticker_data = pd.read_csv(os.path.join(my_path, my_scaled_file), parse_dates=date_cols, dayfirst=True)
+
 
     #get product sentiment
-    my_file = 'product_set_sentiment_'+symbol+".csv"
+    my_file = 'scaled_product_sentiment_feature_set_'+symbol+".csv"
+    my_scaled_file = 'product_sentiment_feature_set_'+symbol+".csv"
     product_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
-    product_data = construct_sentiment_feature_set(product_data, symbol,"product")
-    print(symbol," product feature completed")
+    scaled_product_data = pd.read_csv(os.path.join(my_path, my_scaled_file), parse_dates=date_cols, dayfirst=True)
+
 
     #get coin data
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
-    my_file = 'Coin_data_combined_'+symbol+".csv"
+    my_file = 'scaled_finance_feature_set_'+symbol+".csv"
+    my_scaled_file = 'finance_feature_set_'+symbol+".csv"
     date_cols = ["Date"]
-    coin_data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
-    dates = pd.date_range(start="2017-01-01",end="2021-12-31")
-    coin_data_df = construct_finance_feature_set(coin_data_df, symbol)
-    print(symbol," finance feature completed")
+    finance_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
+    scaled_finance_data = pd.read_csv(os.path.join(my_path, my_scaled_file), parse_dates=date_cols, dayfirst=True)
+    print(symbol)
+    print(finance_data.dtypes)
+    print("---------")
 
     #merge DataFrame
-    #merged_df = pd.merge(df1, df2, how='left', on='Date')
+    final_df = pd.merge(ticker_data, product_data, how='left', on='date')
+    final_df = pd.merge(final_df, finance_data, how='left', left_on='date', right_on='Date')
 
-    #save dataset
-    #my_file = 'Coin_data_combined_'+symbol+".csv"
-    #merged_df.to_csv(os.path.join(my_path, my_file))
+    scaled_final_df = pd.merge(scaled_ticker_data, scaled_product_data, how='left', on='date')
+    scaled_final_df = pd.merge(scaled_final_df, scaled_finance_data, how='left', left_on='date', right_on='Date')
+
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
+    my_file = 'scaled_complete_feature_set_'+symbol+".csv"
+    my_scaled_file = 'complete_feature_set_'+symbol+".csv"
+    final_df.to_csv(os.path.join(my_path, my_file))
+    scaled_final_df.to_csv(os.path.join(my_path, my_scaled_file))
+
+
 
 #################Main###########################
 coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
 
 
-for coin in coin:
+for coin in coins:
     merge(coin)
