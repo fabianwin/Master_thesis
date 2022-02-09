@@ -308,14 +308,14 @@ def construct_finance_feature_set(finance_df, symbol):
     #get Percentage change to next day
     Feature_set = finance_ROC(Feature_set, 2)
     #get price momentum
-    Feature_set = finance_MOM(Feature_set, 2)
+    Feature_set = finance_MOM(Feature_set, 14)
     #get RSI
     Feature_set = finance_RSI(Feature_set, periods = 14, ema = True)
     #get LPPLS bubble coefficients
     Feature_set = get_lppls_scores(Feature_set, symbol)
 
     #save the unscaled version
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering')
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/Feature_sets')
     my_file = 'finance_feature_set_'+symbol+".csv"
     Feature_set.to_csv(os.path.join(my_path, my_file))
 
@@ -340,7 +340,7 @@ def same_day_return(feature_df):
 
     return feature_df
 #----------------------------
-def finance_ROC(feature_df, n):
+def finance_ROC(feature_df, n=2):
     """
     - Returns: Feature_set with an additional column describing the rate of change for each sentiment calculaiton method
     """
@@ -355,7 +355,7 @@ def finance_ROC(feature_df, n):
 
     return feature_df
 #----------------------------
-def finance_MOM(feature_df, n):
+def finance_MOM(feature_df, n=14):
     """
     - Returns: Feature_set with an additional column describing the momentum for each sentiment calculation method.
                n is the amount of days we shifted the dataset.
@@ -394,7 +394,7 @@ def finance_RSI(feature_df, periods, ema = True):
 #----------------------------
 def get_lppls_scores(feature_df, symbol):
     #get LPPLS data
-    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/LPPLS')
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/LPPLS')
     my_file = 'LPPLS_CONF_CSV_'+symbol+".csv"
     date_cols = ["time"]
     lppls_data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols)
