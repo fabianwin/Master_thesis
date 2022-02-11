@@ -1,0 +1,426 @@
+#########Notes############
+"""
+Predict if the return of the next day will be positive or negative or positive #with relevant sentiment features (from 6.0) with a logistic Regression
+
+1. use the relevant sentiment features:
+2. find which sentiment features increases the accuracy
+3. find the accuracy for predicting return with baseline and sentiment features
+
+Finding:
+We are only select feature which improves the accuracy score (same as in paper). In our case we would use sentiment volatility, sentiment momentum, stanford sentiment as a sentimental features. This finding holds true even when we hold tuning parameters constant.
+"""
+########Libraries########
+import pandas as pd
+import numpy as np
+import os
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn import metrics
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.dummy import DummyClassifier
+from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.inspection import permutation_importance
+from sklearn import preprocessing
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.pipeline import Pipeline
+from matplotlib import pyplot
+import matplotlib.pyplot as plt
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+
+
+
+
+########Functions########
+def add_return_boolean(df):
+    for i, row in df.iterrows():
+        if row['ROC_2'] >= 0:
+            sig = 1
+        else:
+            sig= 0
+        df.at[i, 'positive_return'] = sig
+    return df
+#----------------------------
+def LogReg_Pred(feature_list, coin, set, feature_df, predict_return_df):
+    #create X and Y datasets
+    feature_list.append('positive_return')
+    df_not_imputed = feature_df.loc[:,feature_list]
+    feature_list.remove('positive_return')
+
+    #iterative imputer
+    imputer = IterativeImputer(random_state=42)
+    imputed = imputer.fit_transform(df_not_imputed)
+    df_iterative_imputed = pd.DataFrame(imputed, columns=df_not_imputed.columns)
+
+    #build a pipeline to find the best overall combination
+    #define a standard scaler to normalize inputs
+    std_slc = StandardScaler()
+    #create a classifier regularization
+    pca = PCA()
+    # set the tolerance to a large value to make the example faster
+    logistic_Reg = LogisticRegression(max_iter=10000)
+
+    #create actual pipeline
+    pipe = Pipeline([
+        ('scaler', std_slc),
+        ('selector', "passthrough"),
+        ('classifier', logistic_Reg)
+    ])
+
+    N_FEATURES_OPTIONS = list(range(1,len(feature_list)+1,1))
+    C_OPTIONS = np.logspace(-4, 4, 4)
+    reducer_labels = ['PCA', 'KBest(f_classif, k="all")']
+
+    param_grid = [
+        {
+            'selector': [PCA(iterated_power=7)],
+            'selector__n_components': N_FEATURES_OPTIONS,
+            'classifier__C': C_OPTIONS,
+            'classifier__solver':['lbfgs','liblinear']
+        },
+        {
+            'selector': [SelectKBest(chi2)],
+            'selector__k': N_FEATURES_OPTIONS,
+            'classifier__C': C_OPTIONS,
+            'classifier__solver':['lbfgs','liblinear']
+        },
+    ]
+
+
+    scores = ["precision", "accuracy", "recall"]
+
+    #iterate over different imputation methods
+    dfs = [df_not_imputed, df_iterative_imputed]
+    for i, df in enumerate(dfs):
+        print(df.shape)
+        print(i)
+        if i == 0:
+            df.dropna(axis=0, how='any',inplace=True)
+
+        print(df.shape)
+        X = df.loc[:,feature_list]
+        Y = pd.DataFrame(df.loc[:,'positive_return'])
+        X_miss,Y_miss = missing_values_table(X), missing_values_table(Y)
+        print()
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3,random_state=42)
+
+        for score in scores:
+            print("# Tuning hyper-parameters for %s" % score)
+            print()
+
+            search = GridSearchCV(pipe, cv=5, scoring=score, param_grid = param_grid, n_jobs=10)
+            search.fit(X_train, y_train)
+
+            print("Best parameters set found on development set:")
+            print()
+            print(search.best_params_)
+            print()
+            print("Grid scores on development set:")
+            print()
+            means = search.cv_results_["mean_test_score"]
+            stds = search.cv_results_["std_test_score"]
+            for mean, std, params in zip(means, stds, search.cv_results_["params"]):
+                print("%0.3f (+/-%0.03f) for %r" % (mean, std * 2, params))
+            print()
+
+            print("Detailed classification report:")
+            print()
+            print("The model is trained on the full development set.")
+            print("The scores are computed on the full evaluation set.")
+            print()
+            y_true, y_pred = y_test, search.predict(X_test)
+            print(classification_report(y_true, y_pred))
+            print()
+
+            #d = {'Stats':X.columns,'FI':pipe[2].feature_importances_}
+            #df = pd.DataFrame(d)
+
+            importance = search.best_estimator_[2].coef_[0]
+            print(search.best_params_)
+            for i,v in enumerate(importance):
+            	print('Feature: %0d, Score: %.5f' % (i,v))
+
+            # plot feature importance, does not work since PCA has chanegd our original features
+            """
+            pyplot.bar([x for x in range(len(importance))], importance)
+            pyplot.show()
+            my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning')
+            my_file = 'Feature:importance(%0d).png' % (i)
+            plt.savefig(os.path.join(my_path, my_file))¨
+            """
+
+            result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
+            new_row = {'imputation':i,'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
+            predict_return_df= predict_return_df.append(new_row, ignore_index=True)
+
+    return predict_return_df
+#----------------------------
+def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
+    #create X and Y datasets
+    feature_list.append('positive_return')
+    df_not_imputed = feature_df.loc[:,feature_list]
+    feature_list.remove('positive_return')
+
+    #iterative imputer
+    imputer = IterativeImputer(random_state=42)
+    imputed = imputer.fit_transform(df_not_imputed)
+    df_iterative_imputed = pd.DataFrame(imputed, columns=df_not_imputed.columns)
+
+    #build a pipeline to find the best overall combination
+    #define a standard scaler to normalize inputs
+    std_slc = StandardScaler()
+    #create a classifier regularization
+    pca = PCA()
+    # set the tolerance to a large value to make the example faster
+    SVC = svm.SVC()
+
+    #create actual pipeline
+    pipe = Pipeline([
+        ('scaler', std_slc),
+        ('selector', "passthrough"),
+        ('classifier', SVC)
+    ])
+
+    N_FEATURES_OPTIONS = list(range(1,len(feature_list)+1,1))
+    C_OPTIONS =  [0.1, 0.35,0.4,0.45, 1, 10, 100, 1000, 10000, 100000, 1000000]
+    gamma = [1, 0.1, 0.01, 0.001, 0.0001]
+    #reducer_labels = ['PCA', 'KBest(f_classif, k="all")']
+    reducer_labels = ['PCA']
+    """
+    param_grid = [
+        {
+            'selector': [PCA()],
+            'selector__n_components': N_FEATURES_OPTIONS,
+            'classifier__C': C_OPTIONS,
+            'classifier__gamma': gamma,
+            'classifier__kernel':['rbf']
+        },
+        {
+            'selector': [SelectKBest(chi2)],
+            'selector__k': N_FEATURES_OPTIONS,
+            'classifier__C': C_OPTIONS,
+            'classifier__gamma': gamma,
+            'classifier__solver':['rbf']
+        },
+    ]
+    """
+    param_grid = [
+        {
+            'selector': [PCA()],
+            'selector__n_components': N_FEATURES_OPTIONS,
+            'classifier__C': C_OPTIONS,
+            'classifier__gamma': gamma,
+            'classifier__kernel':['rbf']
+        }
+    ]
+
+
+    scores = ["precision", "accuracy"]
+    scores = ["accuracy"]
+
+
+    #iterate over different imputation methods
+    dfs = [df_not_imputed, df_iterative_imputed]
+    for i, df in enumerate(dfs):
+        print(df.shape)
+        print(i)
+        if i == 0:
+            df.dropna(axis=0, how='any',inplace=True)
+
+        print(df.shape)
+        X = df.loc[:,feature_list]
+        Y = pd.DataFrame(df.loc[:,'positive_return'])
+        X_miss,Y_miss = missing_values_table(X), missing_values_table(Y)
+        print()
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3,random_state=42)
+
+        for score in scores:
+            print("# Tuning hyper-parameters for %s" % score)
+            print()
+
+            search = GridSearchCV(pipe, cv=5, scoring=score, param_grid = param_grid, n_jobs=10)
+            search.fit(X_train, y_train)
+
+            print("Best parameters set found on development set:")
+            print()
+            print(search.best_params_)
+            print()
+            print("Grid scores on development set:")
+            print()
+            means = search.cv_results_["mean_test_score"]
+            stds = search.cv_results_["std_test_score"]
+            for mean, std, params in zip(means, stds, search.cv_results_["params"]):
+                print("%0.3f (+/-%0.03f) for %r" % (mean, std * 2, params))
+            print()
+
+            print("Detailed classification report:")
+            print()
+            print("The model is trained on the full development set.")
+            print("The scores are computed on the full evaluation set.")
+            print()
+            y_true, y_pred = y_test, search.predict(X_test)
+            print(classification_report(y_true, y_pred))
+            print()
+
+            #d = {'Stats':X.columns,'FI':pipe[2].feature_importances_}
+            #df = pd.DataFrame(d)
+
+            importance = search.best_estimator_[2].coef_[0]
+            print(search.best_params_)
+            for i,v in enumerate(importance):
+            	print('Feature: %0d, Score: %.5f' % (i,v))
+
+            # plot feature importance, does not work since PCA has chanegd our original features
+            """
+            pyplot.bar([x for x in range(len(importance))], importance)
+            pyplot.show()
+            my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning')
+            my_file = 'Feature:importance(%0d).png' % (i)
+            plt.savefig(os.path.join(my_path, my_file))¨
+            """
+
+            result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
+            new_row = {'imputation':i,'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
+            predict_return_df= predict_return_df.append(new_row, ignore_index=True)
+
+    return predict_return_df
+#----------------------------
+def _Pred(feature_list, coin, set, feature_df,predict_return_df):
+    #create df with all relevant features for this prediction
+    column_list = feature_list
+    column_list.append('positive_return')
+    df = feature_df.loc[:,column_list]
+    df.dropna(axis=0, how='any',inplace=True)
+    feature_list.remove('positive_return')
+    X = df.loc[:,feature_list]
+    Y = df.loc[:,'positive_return']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3,random_state=42)
+    print("train feature shape:", X_train.shape)
+    print("test feature shape:", X_test.shape)
+
+    svc = svm.SVC()
+    #find the suitable parameters  for a rbf kernel
+    param_grid = {'C': [0.1, 0.35,0.4,0.45, 1, 10, 100, 1000, 10000, 100000, 1000000],
+                  'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
+                  'kernel': ["rbf"]}
+    grid = GridSearchCV(svc, param_grid, refit = True, verbose = 3,n_jobs=-1)
+    grid.fit(X_train, y_train)
+    predictions = grid.predict(X_test)
+    print(grid.best_params_)
+    #print(grid.best_estimator_.coef_)
+
+    # print prediction results
+    print(classification_report(y_test, predictions))
+
+    #add metrcis to df
+    #new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_test,y_pred_acc), 'Precision_Score':precision_score(y_test,y_pred_acc), 'Recall_Score':recall_score(y_test,y_pred_acc), 'F1_Score':f1_score(y_test,y_pred_acc),'Best_Parameters':grid.best_params_}
+    #predict_return_df= predict_return_df.append(new_row, ignore_index=True)
+    """
+    r = permutation_importance(svc, X_test, y_test,
+                                n_repeats=30,
+                                random_state=0)
+
+    for i in r.importances_mean.argsort()[::-1]:
+        if r.importances_mean[i] - 2 * r.importances_std[i] > 0:
+            print(f"{df.feature_names[i]:<8}"
+            f"{r.importances_mean[i]:.3f}"
+            f" +/- {r.importances_std[i]:.3f}")
+
+
+    perm_importance = permutation_importance(svc, X_train, y_train)
+
+    sorted_idx = perm_importance.importances_mean.argsort()
+    plt.barh(features[sorted_idx], perm_importance.importances_mean[sorted_idx])
+    plt.xlabel("Permutation Importance")
+    plt.show()
+    """
+
+    return predict_return_df
+#----------------------------
+def missing_values_table(df):
+    mis_val = df.isnull().sum()
+    mis_val_percent = 100 * df.isnull().sum() / len(df)
+    mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+    mis_val_table_ren_columns = mis_val_table.rename(
+    columns = {0 : 'Missing Values', 1 : '% of Total Values'})
+    mis_val_table_ren_columns = mis_val_table_ren_columns[
+        mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+    '% of Total Values', ascending=False).round(1)
+    print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"
+        "There are " + str(mis_val_table_ren_columns.shape[0]) +
+            " columns that have missing values.")
+    return mis_val_table_ren_columns
+########Main##########
+#coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+#sets=["ticker", "product"]
+
+coins=['BTC']
+sets=["ticker"]
+
+predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
+for coin in coins:
+    for set in sets:
+        print(coin)
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
+        my_file = 'complete_feature_set_'+coin+".csv"
+        my_scaled_file = 'scaled_complete_feature_set_'+coin+".csv"
+        date_cols = ["date"]
+        data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
+        scaled_data_df = pd.read_csv(os.path.join(my_path, my_scaled_file), parse_dates=date_cols, dayfirst=True)
+        data_df = add_return_boolean(data_df)
+        scaled_data_df['positive_return'] = data_df.positive_return
+
+        #miss_df = missing_values_table(data_df)
+        #print(miss_df)
+        #data_df.info(verbose=True)
+
+        #run with features from Chen Paper
+        feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers", "_finiteautomata_sentiment"]
+        feature_list = [set + item for item in feature_list_appendable]
+        if set == "ticker":
+            feature_list.append("Momentum_14_ticker_finiteautomata_sentiment")
+        else:
+            feature_list.append("Momentum_14_product_finiteautomata_sentiment")
+        feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
+        #predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
+        predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
+        print("-------------------------------------")
+
+        """
+        #---------------------------------
+        #run with sentiment features only
+        feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
+        feature_list = [set + item for item in feature_list_appendable]
+        if set == "ticker":
+            feature_list.extend(("ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"))
+        else:
+            feature_list.extend(("ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"))
+
+        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
+
+        #---------------------------------
+        #run with finance features only
+        feature_list = ["Real Volume","Circulating Marketcap", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
+
+        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
+
+        #---------------------------------
+        #run with network features only
+        if coin == "BTC":
+            feature_list = ["Adjusted NVT","Adjusted RVT", "Deposits on Exchanges", "Withdrawals from Exchanges", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Miner Supply", "Miner Revenue per Hash per Second", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+
+        elif coin == "ADA":
+            feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+
+        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
+
+        #---------------------------------
+        """
+
+
+predict_return.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning/return_predictions.csv', index = False)
