@@ -178,36 +178,26 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
     # set the tolerance to a large value to make the example faster
     SVC = svm.SVC()
 
-    #create actual pipeline
     pipe = Pipeline([
-        ('scaler', std_slc),
         ('selector', "passthrough"),
         ('classifier', SVC)
     ])
+
+    """
+    #create actual pipeline
+    pipe = Pipeline([
+            ('scaler', std_slc),
+            ('selector', "passthrough"),
+            ('classifier', logistic_Reg)
+    ])
+    """
 
     N_FEATURES_OPTIONS = list(range(1,len(feature_list)+1,1))
     C_OPTIONS =  [0.1, 0.35,0.4,0.45, 1, 10, 100, 1000, 10000, 100000, 1000000]
     gamma = [1, 0.1, 0.01, 0.001, 0.0001]
     #reducer_labels = ['PCA', 'KBest(f_classif, k="all")']
     reducer_labels = ['PCA']
-    """
-    param_grid = [
-        {
-            'selector': [PCA()],
-            'selector__n_components': N_FEATURES_OPTIONS,
-            'classifier__C': C_OPTIONS,
-            'classifier__gamma': gamma,
-            'classifier__kernel':['rbf']
-        },
-        {
-            'selector': [SelectKBest(chi2)],
-            'selector__k': N_FEATURES_OPTIONS,
-            'classifier__C': C_OPTIONS,
-            'classifier__gamma': gamma,
-            'classifier__solver':['rbf']
-        },
-    ]
-    """
+
     param_grid = [
         {
             'selector': [PCA()],
@@ -218,19 +208,10 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
         }
     ]
 
-
-    scores = ["precision", "accuracy"]
     scores = ["accuracy"]
-
-
     #iterate over different imputation methods
-    dfs = [df_not_imputed, df_iterative_imputed]
+    dfs = [df_iterative_imputed]
     for i, df in enumerate(dfs):
-        print(df.shape)
-        print(i)
-        if i == 0:
-            df.dropna(axis=0, how='any',inplace=True)
-
         print(df.shape)
         X = df.loc[:,feature_list]
         Y = pd.DataFrame(df.loc[:,'positive_return'])
@@ -242,8 +223,8 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             print("# Tuning hyper-parameters for %s" % score)
             print()
 
-            search = GridSearchCV(pipe, cv=5, scoring=score, param_grid = param_grid, n_jobs=10)
-            search.fit(X_train, y_train)
+            search = GridSearchCV(pipe, cv=5, scoring=score, param_grid = param_grid, n_jobs=2)
+            search.fit(X_train, y_train.values.ravel())
 
             print("Best parameters set found on development set:")
             print()
@@ -266,15 +247,6 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             print(classification_report(y_true, y_pred))
             print()
 
-            #d = {'Stats':X.columns,'FI':pipe[2].feature_importances_}
-            #df = pd.DataFrame(d)
-
-            importance = search.best_estimator_[2].coef_[0]
-            print(search.best_params_)
-            for i,v in enumerate(importance):
-            	print('Feature: %0d, Score: %.5f' % (i,v))
-
-            # plot feature importance, does not work since PCA has chanegd our original features
             """
             pyplot.bar([x for x in range(len(importance))], importance)
             pyplot.show()
@@ -286,61 +258,10 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
             new_row = {'imputation':i,'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
+            print("we are here")
 
     return predict_return_df
-#----------------------------
-def _Pred(feature_list, coin, set, feature_df,predict_return_df):
-    #create df with all relevant features for this prediction
-    column_list = feature_list
-    column_list.append('positive_return')
-    df = feature_df.loc[:,column_list]
-    df.dropna(axis=0, how='any',inplace=True)
-    feature_list.remove('positive_return')
-    X = df.loc[:,feature_list]
-    Y = df.loc[:,'positive_return']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3,random_state=42)
-    print("train feature shape:", X_train.shape)
-    print("test feature shape:", X_test.shape)
-
-    svc = svm.SVC()
-    #find the suitable parameters  for a rbf kernel
-    param_grid = {'C': [0.1, 0.35,0.4,0.45, 1, 10, 100, 1000, 10000, 100000, 1000000],
-                  'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
-                  'kernel': ["rbf"]}
-    grid = GridSearchCV(svc, param_grid, refit = True, verbose = 3,n_jobs=-1)
-    grid.fit(X_train, y_train)
-    predictions = grid.predict(X_test)
-    print(grid.best_params_)
-    #print(grid.best_estimator_.coef_)
-
-    # print prediction results
-    print(classification_report(y_test, predictions))
-
-    #add metrcis to df
-    #new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_test,y_pred_acc), 'Precision_Score':precision_score(y_test,y_pred_acc), 'Recall_Score':recall_score(y_test,y_pred_acc), 'F1_Score':f1_score(y_test,y_pred_acc),'Best_Parameters':grid.best_params_}
-    #predict_return_df= predict_return_df.append(new_row, ignore_index=True)
-    """
-    r = permutation_importance(svc, X_test, y_test,
-                                n_repeats=30,
-                                random_state=0)
-
-    for i in r.importances_mean.argsort()[::-1]:
-        if r.importances_mean[i] - 2 * r.importances_std[i] > 0:
-            print(f"{df.feature_names[i]:<8}"
-            f"{r.importances_mean[i]:.3f}"
-            f" +/- {r.importances_std[i]:.3f}")
-
-
-    perm_importance = permutation_importance(svc, X_train, y_train)
-
-    sorted_idx = perm_importance.importances_mean.argsort()
-    plt.barh(features[sorted_idx], perm_importance.importances_mean[sorted_idx])
-    plt.xlabel("Permutation Importance")
-    plt.show()
-    """
-
-    return predict_return_df
 #----------------------------
 def missing_values_table(df):
     mis_val = df.isnull().sum()
