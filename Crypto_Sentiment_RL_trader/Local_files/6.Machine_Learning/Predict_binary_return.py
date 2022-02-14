@@ -256,7 +256,7 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             """
 
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
-            new_row = {'imputation':i,'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
+            new_row = {'imputation':i,'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"SVM",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
             print("we are here")
 
