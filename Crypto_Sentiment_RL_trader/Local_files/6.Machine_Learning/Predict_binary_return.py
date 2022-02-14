@@ -178,19 +178,14 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
     # set the tolerance to a large value to make the example faster
     SVC = svm.SVC()
 
-    pipe = Pipeline([
-        ('selector', "passthrough"),
-        ('classifier', SVC)
-    ])
 
-    """
     #create actual pipeline
     pipe = Pipeline([
             ('scaler', std_slc),
             ('selector', "passthrough"),
             ('classifier', logistic_Reg)
     ])
-    """
+    
 
     N_FEATURES_OPTIONS = list(range(1,len(feature_list)+1,1))
     C_OPTIONS =  [0.1, 0.35,0.4,0.45, 1, 10, 100, 1000, 10000, 100000, 1000000]
