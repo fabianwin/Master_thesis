@@ -279,8 +279,8 @@ predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised 
 for coin in coins:
     for set in sets:
         print(coin)
-        my_file = 'complete_feature_set_'+coin+".csv"
-        my_scaled_file = 'scaled_complete_feature_set_'+coin+".csv"
+        my_file = 'Daily_trading/complete_feature_set_'+coin+".csv"
+        my_scaled_file = 'Daily_trading/scaled_complete_feature_set_'+coin+".csv"
         date_cols = ["date"]
         data_df = pd.read_csv(my_file, parse_dates=date_cols, dayfirst=True)
         scaled_data_df = pd.read_csv(my_scaled_file, parse_dates=date_cols, dayfirst=True)
