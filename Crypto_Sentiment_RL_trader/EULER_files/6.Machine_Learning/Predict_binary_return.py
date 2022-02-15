@@ -298,10 +298,10 @@ for coin in coins:
         feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
 
         predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-        predict_return.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning/return_logreg_predictions.csv', index = False)
+        predict_return.to_csv(r'return_logreg_predictions.csv', index = False)
 
         predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
-        predict_return.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning/return_SVM_predictions.csv', index = False)
+        predict_return.to_csv(r'return_SVM_predictions.csv', index = False)
 
         print("-------------------------------------")
 
