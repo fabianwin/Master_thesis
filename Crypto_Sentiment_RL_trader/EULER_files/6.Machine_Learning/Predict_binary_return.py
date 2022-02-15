@@ -256,7 +256,6 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             print("we are here")
 
     return predict_return_df
-
 #----------------------------
 def missing_values_table(df):
     mis_val = df.isnull().sum()
@@ -275,25 +274,19 @@ def missing_values_table(df):
 coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
 sets=["ticker", "product"]
 
-#coins=['BTC']
-#sets=["ticker"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
 for coin in coins:
     for set in sets:
         print(coin)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
         my_file = 'complete_feature_set_'+coin+".csv"
         my_scaled_file = 'scaled_complete_feature_set_'+coin+".csv"
         date_cols = ["date"]
-        data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
-        scaled_data_df = pd.read_csv(os.path.join(my_path, my_scaled_file), parse_dates=date_cols, dayfirst=True)
+        data_df = pd.read_csv(my_file, parse_dates=date_cols, dayfirst=True)
+        scaled_data_df = pd.read_csv(my_scaled_file, parse_dates=date_cols, dayfirst=True)
         data_df = add_return_boolean(data_df)
         scaled_data_df['positive_return'] = data_df.positive_return
 
-        #miss_df = missing_values_table(data_df)
-        #print(miss_df)
-        #data_df.info(verbose=True)
 
         #run with features from Chen Paper
         feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers", "_finiteautomata_sentiment"]
