@@ -154,7 +154,6 @@ def LogReg_Pred(feature_list, coin, set, feature_df, predict_return_df):
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
             new_row = {'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
-            predict_return.to_csv(r'return_logreg_predictions.csv', index = False)
 
     return predict_return_df
 #----------------------------
@@ -262,7 +261,6 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
             new_row = {'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
-            predict_return.to_csv(r'return_SVM_predictions.csv', index = False)
 
     return predict_return_df
 #----------------------------
@@ -358,7 +356,6 @@ def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
             new_row = {'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"SVM",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
-            predict_return.to_csv(r'return_KNN_predictions.csv', index = False)
 
     return predict_return_df
 #----------------------------
@@ -382,66 +379,46 @@ sets=["ticker", "product"]
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
 for afunc in (LogReg_Pred, SVM_Pred, KNN_Pred):
     for coin in coins:
+        print(coin)
         for set in sets:
-            print(coin)
             my_file = 'Daily_trading/complete_feature_set_'+coin+".csv"
-            my_scaled_file = 'Daily_trading/scaled_complete_feature_set_'+coin+".csv"
             date_cols = ["date"]
             data_df = pd.read_csv(my_file, parse_dates=date_cols, dayfirst=True)
-            scaled_data_df = pd.read_csv(my_scaled_file, parse_dates=date_cols, dayfirst=True)
             data_df = add_return_boolean(data_df)
-            scaled_data_df['positive_return'] = data_df.positive_return
 
             #run with features from Chen Paper (9 features)
-            feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers", "_finiteautomata_sentiment"]
+            feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers"]
             feature_list = [set + item for item in feature_list_appendable]
             if set == "ticker":
                 feature_list.append("Momentum_14_ticker_finiteautomata_sentiment")
             else:
                 feature_list.append("Momentum_14_product_finiteautomata_sentiment")
             feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
-
             predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+            print("-------------------------------------")
 
-            #predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-            #predict_return.to_csv(r'return_logreg_predictions.csv', index = False)
+            #run with sentiment features only (8 features)
+            feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
+            feature_list = [set + item for item in feature_list_appendable]
+            if set == "ticker":
+                feature_list.extend(("ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"))
+            else:
+                feature_list.extend(("ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"))
+            predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+            print("-------------------------------------")
 
-            #predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
-            #predict_return.to_csv(r'return_SVM_predictions.csv', index = False)
+            #run with finance features only (8 features)
+            feature_list = ["Real Volume","Circulating Marketcap", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
+            predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+            print("-------------------------------------")
 
-            #predict_return = KNN_Pred(feature_list, coin, set, data_df, predict_return)
-            #predict_return.to_csv(r'return_KNN_predictions.csv', index = False)
+            #run with network features only (9 features)
+            if coin == "BTC":
+                feature_list = ["Adjusted NVT","Adjusted RVT", "Deposits on Exchanges", "Withdrawals from Exchanges", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Miner Supply", "Miner Revenue per Hash per Second", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+            elif coin == "ADA":
+                feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+            predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+            print("-------------------------------------")
 
-
-        print("-------------------------------------")
-
-        """
-        #---------------------------------
-        #run with sentiment features only
-        feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
-        feature_list = [set + item for item in feature_list_appendable]
-        if set == "ticker":
-            feature_list.extend(("ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"))
-        else:
-            feature_list.extend(("ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"))
-
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        #run with finance features only
-        feature_list = ["Real Volume","Circulating Marketcap", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
-
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        #run with network features only
-        if coin == "BTC":
-            feature_list = ["Adjusted NVT","Adjusted RVT", "Deposits on Exchanges", "Withdrawals from Exchanges", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Miner Supply", "Miner Revenue per Hash per Second", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
-
-        elif coin == "ADA":
-            feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
-
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        """
+    my_file = str(afunc)+"_predictions.csv"
+    predict_return.to_csv(my_file, index = False)

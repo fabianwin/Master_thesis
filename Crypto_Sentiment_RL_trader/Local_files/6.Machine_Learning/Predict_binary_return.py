@@ -264,7 +264,7 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
 
     return predict_return_df
 #----------------------------
-def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
+def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
     #create X and Y datasets
     feature_list.append('positive_return')
     df_not_imputed = feature_df.loc[:,feature_list]
@@ -281,8 +281,7 @@ def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
     #create a classifier regularization
     pca = PCA()
     # set the tolerance to a large value to make the example faster
-    SVC = svm.SVC()
-
+    knn = KNeighborsClassifier()
 
     #create actual pipeline
     pipe = Pipeline([
@@ -302,9 +301,8 @@ def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
         {
             'selector': [PCA()],
             'selector__n_components': N_FEATURES_OPTIONS,
-            'classifier__C': C_OPTIONS,
-            'classifier__gamma': gamma,
-            'classifier__kernel':['rbf']
+            'classifier__n_neighbors': list(range(1, 150)),
+            'classifier__p': [1,2],
         }
     ]
 
@@ -358,7 +356,7 @@ def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
             result_df = pd.DataFrame.from_dict(search.cv_results_, orient='columns')
             new_row = {'columns':list(result_df.columns),'score': score,'Coin':coin,'Set_description': set,'supervised ML algorithm type':"SVM",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
             predict_return_df= predict_return_df.append(new_row, ignore_index=True)
-            print("we are here")
+            predict_return.to_csv(r'return_KNN_predictions.csv', index = False)
 
     return predict_return_df
 #----------------------------
@@ -380,59 +378,51 @@ coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
 sets=["ticker", "product"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
-for coin in coins:
-    for set in sets:
+for afunc in (LogReg_Pred, SVM_Pred, KNN_Pred):
+    for coin in coins:
         print(coin)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
-        my_file = 'complete_feature_set_'+coin+".csv"
-        date_cols = ["date"]
-        data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
-        data_df = add_return_boolean(data_df)
+        for set in sets:
+                my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
+                my_file = 'complete_feature_set_'+coin+".csv"
+                date_cols = ["date"]
+                data_df = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
+                data_df = add_return_boolean(data_df)
 
-        #run with features from Chen Paper (9 features)
-        feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers"]
-        feature_list = [set + item for item in feature_list_appendable]
-        if set == "ticker":
-            feature_list.append("Momentum_14_ticker_finiteautomata_sentiment")
-        else:
-            feature_list.append("Momentum_14_product_finiteautomata_sentiment")
-        feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
+                #run with features from Chen Paper (9 features)
+                feature_list_appendable = ["_number_of_tweets", "_finiteautomata_sentiment", "_finiteautomata_sentiment_expectation_value_volatility", "_average_number_of_followers"]
+                feature_list = [set + item for item in feature_list_appendable]
+                if set == "ticker":
+                    feature_list.append("Momentum_14_ticker_finiteautomata_sentiment")
+                else:
+                    feature_list.append("Momentum_14_product_finiteautomata_sentiment")
+                feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
+                predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+                print("-------------------------------------")
 
-        #predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-        #predict_return.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning/return_logreg_predictions.csv', index = False)
+                #run with sentiment features only (8 features)
+                feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
+                feature_list = [set + item for item in feature_list_appendable]
+                if set == "ticker":
+                    feature_list.extend(("ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"))
+                else:
+                    feature_list.extend(("ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"))
+                predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+                print("-------------------------------------")
 
-        predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
-        predict_return.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning/return_SVM_predictions.csv', index = False)
+                #run with finance features only (8 features)
+                feature_list = ["Real Volume","Circulating Marketcap", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
+                predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+                print("-------------------------------------")
 
-        print("-------------------------------------")
+                #run with network features only (9 features)
+                if coin == "BTC":
+                    feature_list = ["Adjusted NVT","Adjusted RVT", "Deposits on Exchanges", "Withdrawals from Exchanges", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Miner Supply", "Miner Revenue per Hash per Second", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+                elif coin == "ADA":
+                    feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
+                predict_return = afunc(feature_list, coin, set, data_df, predict_return)
+                print("-------------------------------------")
 
-        """
-        #---------------------------------
-        #run with sentiment features only
-        feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
-        feature_list = [set + item for item in feature_list_appendable]
-        if set == "ticker":
-            feature_list.extend(("ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"))
-        else:
-            feature_list.extend(("ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"))
 
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        #run with finance features only
-        feature_list = ["Real Volume","Circulating Marketcap", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
-
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        #run with network features only
-        if coin == "BTC":
-            feature_list = ["Adjusted NVT","Adjusted RVT", "Deposits on Exchanges", "Withdrawals from Exchanges", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Miner Supply", "Miner Revenue per Hash per Second", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
-
-        elif coin == "ADA":
-            feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
-
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-
-        #---------------------------------
-        """
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning')
+    my_file = str(afunc)+" _predictions.csv"
+    predict_return.to_csv(os.path.join(my_path, my_file))
