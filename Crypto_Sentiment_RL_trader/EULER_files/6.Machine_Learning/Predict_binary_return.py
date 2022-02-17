@@ -34,7 +34,7 @@ from sklearn.impute import IterativeImputer
 import missingno as msno
 
 
-processors = 3
+processors = 8
 
 ########Functions########
 def add_return_boolean(df):
@@ -264,7 +264,7 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
 
     return predict_return_df
 #----------------------------
-def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
+def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
     #create X and Y datasets
     feature_list.append('positive_return')
     df_not_imputed = feature_df.loc[:,feature_list]
@@ -281,8 +281,7 @@ def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
     #create a classifier regularization
     pca = PCA()
     # set the tolerance to a large value to make the example faster
-    SVC = svm.SVC()
-
+    knn = KNeighborsClassifier()
 
     #create actual pipeline
     pipe = Pipeline([
@@ -302,9 +301,8 @@ def SVM_Pred_copy(feature_list, coin, set, feature_df, predict_return_df):
         {
             'selector': [PCA()],
             'selector__n_components': N_FEATURES_OPTIONS,
-            'classifier__C': C_OPTIONS,
-            'classifier__gamma': gamma,
-            'classifier__kernel':['rbf']
+            'classifier__n_neighbors': list(range(1, 150)),
+            'classifier__p': [1,2],
         }
     ]
 
@@ -400,11 +398,15 @@ for coin in coins:
             feature_list.append("Momentum_14_product_finiteautomata_sentiment")
         feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
 
-        predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
-        predict_return.to_csv(r'return_logreg_predictions.csv', index = False)
+        #predict_return = LogReg_Pred(feature_list, coin, set, data_df, predict_return)
+        #predict_return.to_csv(r'return_logreg_predictions.csv', index = False)
 
-        predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
-        predict_return.to_csv(r'return_SVM_predictions.csv', index = False)
+        #predict_return = SVM_Pred(feature_list, coin, set, data_df, predict_return)
+        #predict_return.to_csv(r'return_SVM_predictions.csv', index = False)
+
+        predict_return = KNN_Pred(feature_list, coin, set, data_df, predict_return)
+        predict_return.to_csv(r'return_KNN_predictions.csv', index = False)
+
 
         print("-------------------------------------")
 
