@@ -5,7 +5,7 @@ from functions import construct_sentiment_feature_set, construct_finance_feature
 
 #############Functions###########################
 def get_features(symbol):
-    """
+
     #read dataframes
     #get ticker sentiment
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis')
@@ -20,7 +20,7 @@ def get_features(symbol):
     product_data = pd.read_csv(os.path.join(my_path, my_file), parse_dates=date_cols, dayfirst=True)
     product_data = construct_sentiment_feature_set(product_data, symbol,"product")
     print(symbol," product feature completed")
-    """
+    
     #get coin data
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/4.Financial_data/Daily_Data')
     my_file = 'Coin_data_combined_'+symbol+".csv"

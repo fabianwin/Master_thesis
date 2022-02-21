@@ -228,7 +228,7 @@ class LPPLS(object):
         # set labels
         ax1.set_ylabel('ln(p)')
         ax1.legend(loc=2)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/LPPLS')
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/LPPLS')
         my_file = 'LPPLS_fit_'+symbol+".png"
         fig.savefig(os.path.join(my_path, my_file))
 
@@ -397,7 +397,7 @@ class LPPLS(object):
         ax1_0.legend(loc=2)
         ax2_0.legend(loc=2)
 
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/LPPLS')
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/LPPLS')
         my_file = 'confidence_indicators_'+symbol+".png"
         fig.savefig(os.path.join(my_path, my_file))
 
