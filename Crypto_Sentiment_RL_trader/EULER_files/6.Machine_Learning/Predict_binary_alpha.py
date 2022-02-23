@@ -292,7 +292,7 @@ def missing_values_table(df):
 ########Main##########
 #load BITX Index Data
 my_file = "Daily_trading/BITX_index_fund.csv"
-data_df = pd.read_csv(my_file, parse_dates=["Exchange Date"], dayfirst=True)
+index_data_df = pd.read_csv(my_file, parse_dates=["Exchange Date"], dayfirst=True)
 index_data_df = index_data_df.rename(columns={"Exchange Date":"Date"})
 index_data_df = finance_ROC(index_data_df)
 index_data_df = index_data_df.rename(columns={"ROC_2":"ROC_2_Index"})
