@@ -35,7 +35,6 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 import missingno as msno
 
-
 processors = 10
 
 ########Functions########
@@ -153,13 +152,10 @@ def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
             ('classifier', KNN)
     ])
 
-    N_FEATURES_OPTIONS = list(range(1,len(feature_list)+1,1))
-    reducer_labels = ['PCA']
-
     param_grid = [
         {
             'selector': [PCA()],
-            'selector__n_components': N_FEATURES_OPTIONS,
+            'selector__n_components': list(range(1,len(feature_list)+1,1)),
             'classifier__n_neighbors': list(range(1, 150)),
             'classifier__p': [1,2],
         }
@@ -176,7 +172,6 @@ def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
     print(search.best_params_)
     print()
 
-
     print("Impute the test set")
     X_test = test.loc[:,feature_list]
     y_test = pd.DataFrame(test.loc[:,'positive_return'])
@@ -188,7 +183,7 @@ def KNN_Pred(feature_list, coin, set, feature_df, predict_return_df):
     y_true, y_pred = y_test, search.predict(X_test)
     print(classification_report(y_true, y_pred))
     print()
-    new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
+    new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"K nearest Neighbour",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
     predict_return_df= predict_return_df.append(new_row, ignore_index=True)
 
     return predict_return_df
@@ -260,7 +255,7 @@ def SVM_Pred(feature_list, coin, set, feature_df, predict_return_df):
     print(classification_report(y_true, y_pred))
     print()
 
-    new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Logistic Regression",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
+    new_row = {'Coin':coin,'Set_description': set,'supervised ML algorithm type':"Support Vector Machine",'Features':feature_list,'Accuracy_Score':accuracy_score(y_true,y_pred), 'Precision_Score':precision_score(y_true,y_pred), 'Recall_Score':recall_score(y_true,y_pred), 'F1_Score':f1_score(y_true,y_pred),'Best_Parameters':search.best_params_}
     predict_return_df= predict_return_df.append(new_row, ignore_index=True)
 
     return predict_return_df
@@ -283,7 +278,7 @@ coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
 sets=["ticker", "product"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
-for afunc in (LogReg_Pred, KNN_Pred):
+for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
     for coin in coins:
         for set in sets:
                 my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading')
@@ -302,8 +297,6 @@ for afunc in (LogReg_Pred, KNN_Pred):
                 feature_list.extend(["Real Volume","MOM_14","Volatility","RSI_14"])
                 predict_return = afunc(feature_list, coin, set, data_df, predict_return)
                 print("-------------------------------------")
-
-                """
 
                 #run with sentiment features only (8 features)
                 feature_list_appendable = ["_number_of_tweets", "_average_number_of_likes", "_average_number_of_retweets", "_average_number_of_followers", "_finiteautomata_sentiment","_finiteautomata_sentiment_expectation_value_volatility"]
@@ -327,7 +320,6 @@ for afunc in (LogReg_Pred, KNN_Pred):
                     feature_list = ["Adjusted NVT","Adjusted RVT", "Average Transaction Fees", "Adjusted Transaction Volume", "Average Transfer Value", "Active Supply", "Addresses Count", "Active Addresses Count", "Addresses with balance greater than $1"]
                 predict_return = afunc(feature_list, coin, set, data_df, predict_return)
                 print("-------------------------------------")
-                """
 
 
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/6.Machine_Learning')
