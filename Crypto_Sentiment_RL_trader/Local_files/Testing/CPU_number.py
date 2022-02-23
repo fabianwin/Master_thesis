@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import multiprocessing
+import numpy as np
 
 print(multiprocessing.cpu_count())
 
