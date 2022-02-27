@@ -298,7 +298,7 @@ index_data_df = finance_ROC(index_data_df)
 index_data_df = index_data_df.rename(columns={"ROC_2":"ROC_2_Index"})
 
 #coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
-coins=['BTC','DOGE']
+coins=['ETH', 'XRP']
 
 sets=["ticker", "product"]
 
@@ -352,5 +352,5 @@ for afunc in (SVM_Pred, KNN_Pred):
                 print("-------------------------------------")
 
     #my_file = str(afunc)+" _alpha_predictions.csv"
-    my_file = str(afunc)+" _BTC/DOGE_alpha_predictions.csv"
+    my_file = str(afunc)+" _ETH/XRP_alpha_predictions.csv"
     predict_return.to_csv(my_file, index = False)
