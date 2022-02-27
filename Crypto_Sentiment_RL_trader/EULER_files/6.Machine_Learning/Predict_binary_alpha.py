@@ -297,11 +297,14 @@ index_data_df = index_data_df.rename(columns={"Exchange Date":"Date"})
 index_data_df = finance_ROC(index_data_df)
 index_data_df = index_data_df.rename(columns={"ROC_2":"ROC_2_Index"})
 
-coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+#coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+coins=['ADA','BNB']
+
 sets=["ticker", "product"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
-for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
+#for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
+for afunc in (SVM_Pred, KNN_Pred):
     for coin in coins:
         for set in sets:
                 my_file = 'Daily_trading/complete_feature_set_'+coin+".csv"
@@ -348,5 +351,6 @@ for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
                 predict_return = afunc(feature_list, coin, set, data_df, predict_return)
                 print("-------------------------------------")
 
-    my_file = str(afunc)+" _alpha_predictions.csv"
+    #my_file = str(afunc)+" _alpha_predictions.csv"
+    my_file = str(afunc)+" _ADA/BNB_alpha_predictions.csv"
     predict_return.to_csv(my_file, index = False)
