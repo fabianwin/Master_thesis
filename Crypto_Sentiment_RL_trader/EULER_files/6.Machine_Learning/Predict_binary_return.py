@@ -274,7 +274,7 @@ def missing_values_table(df):
     return mis_val_table_ren_columns
 ########Main###########
 #coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
-coins=['BTC','DOGE']
+coins=['ETH','XRP']
 sets=["ticker", "product"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
@@ -322,5 +322,5 @@ for afunc in (SVM_Pred,KNN_Pred):
                 print("-------------------------------------")
 
     #my_file = str(afunc)+" _predictions.csv"
-    my_file = str(afunc)+" _BTC/DOGE_predictions.csv"
+    my_file = str(afunc)+" _ETH/XRP_predictions.csv"
     predict_return.to_csv(my_file, index = False)
