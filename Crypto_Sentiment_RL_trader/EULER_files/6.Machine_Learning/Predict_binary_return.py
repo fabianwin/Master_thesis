@@ -272,12 +272,14 @@ def missing_values_table(df):
         "There are " + str(mis_val_table_ren_columns.shape[0]) +
             " columns that have missing values.")
     return mis_val_table_ren_columns
-########Main##########
-coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+########Main###########
+#coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+coins=['ADA','BNB']
 sets=["ticker", "product"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
-for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
+#for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
+for afunc in (SVM_Pred,KNN_Pred):
     for coin in coins:
         for set in sets:
                 my_file = 'Daily_trading/complete_feature_set_'+coin+".csv"
@@ -319,6 +321,6 @@ for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
                 predict_return = afunc(feature_list, coin, set, data_df, predict_return)
                 print("-------------------------------------")
 
-
-    my_file = str(afunc)+" _predictions.csv"
+    #my_file = str(afunc)+" _predictions.csv"
+    my_file = str(afunc)+" _ADA/BNB_predictions.csv"
     predict_return.to_csv(my_file, index = False)
