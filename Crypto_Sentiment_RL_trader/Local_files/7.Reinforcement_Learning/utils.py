@@ -72,7 +72,7 @@ class TradingGraph:
 
 
     def Plot_indicators(self, df, Date_Render_range):
-        self.ticker_number_of_tweets.append(df["sma7"])
+        self.ticker_number_of_tweets.append(df["ticker_number_of_tweets"])
 
         #self.sma25.append(df["sma25"])
         #self.sma99.append(df["sma99"])
@@ -84,7 +84,7 @@ class TradingGraph:
         #self.RSI.append(df["RSI"])
 
         # Add Simple Moving Average
-        self.ax1.plot(Date_Render_range, self.sma7,'-')
+        self.ax1.plot(Date_Render_range, self.ticker_number_of_tweets,'-')
         #self.ax1.plot(Date_Render_range, self.sma25,'-')
         #self.ax1.plot(Date_Render_range, self.sma99,'-')
 
@@ -123,7 +123,7 @@ class TradingGraph:
 
         # Clear the frame rendered last step
         self.ax1.clear()
-        candlestick_ohlc(self.ax1, self.render_data, width=0.8/24, colorup='green', colordown='red', alpha=0.8)
+        candlestick_ohlc(self.ax1, self.render_data, width=0.4, colorup='green', colordown='red', alpha=0.8)
 
         # Put all dates to one list and fill ax2 sublot with volume
         Date_Render_range = [i[0] for i in self.render_data]
