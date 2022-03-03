@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 import pandas as pd
 import numpy as np
 from pysentimiento.preprocessing import preprocess_tweet
+import os
 
 def preprocess_tweets(df):
     for n,row in df.iterrows():
@@ -32,3 +33,6 @@ def preprocess(df):
         print(n)
 
     return df
+#----------------------------
+df =pd.read_csv(r'/Users/fabian/Downloads/texts.csv')
+print(df)

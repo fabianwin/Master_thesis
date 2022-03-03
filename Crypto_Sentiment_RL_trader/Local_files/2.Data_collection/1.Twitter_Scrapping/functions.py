@@ -147,7 +147,7 @@ def scrape_google_trendwords(keyword):
 def filter_google_queries(keyword,df_tweets):
     len_list = list()
     #load datasets
-    semantic_search_words = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets/keyword_filter.csv', usecols=[0], encoding='utf-8')
+    semantic_search_words = pd.read_csv(r'/Users/fabian/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping/Yearly_datasets/keywords_sets/keyword_filter.csv', usecols=[0], encoding='utf-8')
     neg_exp = list(semantic_search_words['neg_words'].values.flatten())
     #add special character strings
     special_char = ['kaç tl','dólar','fiyatı','árfolyam', 'kaç','cotação','giá', 'fiyat grafi_i','yatƒ±rma','soru≈üturma',' –±–∏—Ä–∂–∞','ka√ß','fiyatƒ±','–∫—É—Ä—Å','davasƒ±']
@@ -164,3 +164,19 @@ def filter_google_queries(keyword,df_tweets):
     len_list.append(len(df_tweets))
 
     return df_tweets
+
+#------------------------
+if __name__ == "__main__":
+    classic_coins = ['BITCOIN', 'ETHEREUM']
+    venture_capital_backed_coins = ['BINANCE', 'CARDANO', 'RIPPLE']
+    community_driven_coins = ['DOGECOIN']
+    coin_list = classic_coins + venture_capital_backed_coins + community_driven_coins
+
+    for keyword in coin_list:
+        print(keyword)
+        my_path = os.path.abspath(r'/Users/fabian/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
+        my_file = 'keyword_set_'+keyword+".csv"
+        keyword_df = pd.read_csv(os.path.join(my_path, my_file))
+        print("Shape before filter: ", keyword_df.shape[0])
+        keyword_df = filter_google_queries(keyword, keyword_df)
+        print("---------------")
