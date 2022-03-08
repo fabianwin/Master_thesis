@@ -455,11 +455,13 @@ def test_agent(test_df, test_df_nomalized, visualize=True, test_episodes=10, fol
 
 if __name__ == "__main__":
     df = pd.read_csv(r'Daily_trading/complete_feature_set_ADA.csv')
-    df = pd.read_csv(r'Daily_trading/complete_feature_set_BTC.csv')
-    df = pd.read_csv(r'Daily_trading/complete_feature_set_BNB.csv')
-    df = pd.read_csv(r'Daily_trading/complete_feature_set_DOGE.csv')
-    df = pd.read_csv(r'Daily_trading/complete_feature_set_ETH.csv')
-    df = pd.read_csv(r'Daily_trading/complete_feature_set_XRP.csv')
+    #df = pd.read_csv(r'Daily_trading/complete_feature_set_BTC.csv')
+    #df = pd.read_csv(r'Daily_trading/complete_feature_set_BNB.csv')
+    #df = pd.read_csv(r'Daily_trading/complete_feature_set_DOGE.csv')
+    #df = pd.read_csv(r'Daily_trading/complete_feature_set_ETH.csv')
+    #df = pd.read_csv(r'Daily_trading/complete_feature_set_XRP.csv')
+    df.info(verbose=True)
+
 
     # ticker sentiments
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
