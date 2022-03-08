@@ -1,3 +1,13 @@
+#================================================================
+#
+#   File name   : utils.py
+#   Author      : PyLessons
+#   Created date: 2021-02-25
+#   Website     : https://pylessons.com/
+#   GitHub      : https://github.com/pythonlessons/RL-Bitcoin-trading-bot
+#   Description : additional functions
+#
+#================================================================
 import pandas as pd
 from collections import deque
 import matplotlib.pyplot as plt
@@ -11,13 +21,34 @@ import numpy as np
 def Write_to_file(Date, net_worth, filename='{}.txt'.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))):
     for i in net_worth:
         Date += " {}".format(i)
+    #print(Date)
     if not os.path.exists('logs'):
-        parent_dir = "/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files"
-        path = os.path.join(parent_dir, 'logs')
-        os.makedirs(path)
-    file = Price (Open)("logs/"+filename, 'a+')
+        os.makedirs('logs')
+    file = open("logs/"+filename, 'a+')
     file.write(Date+"\n")
     file.close()
+
+def display_frames_as_gif(frames, episode):
+    import pylab
+    from matplotlib import animation
+    try:
+        pylab.figure(figsize=(frames[0].shape[1] / 72.0, frames[0].shape[0] / 72.0), dpi = 72)
+        patch = pylab.imshow(frames[0])
+        pylab.axis('off')
+        pylab.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        def animate(i):
+            patch.set_data(frames[i])
+        anim = animation.FuncAnimation(pylab.gcf(), animate, frames = len(frames), interval=33)
+        anim.save(str(episode)+'_gameplay.gif')
+    except:
+        pylab.figure(figsize=(frames[0].shape[1] / 72.0, frames[0].shape[0] / 72.0), dpi = 72)
+        patch = pylab.imshow(frames[0])
+        pylab.axis('off')
+        pylab.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        def animate(i):
+            patch.set_data(frames[i])
+        anim = animation.FuncAnimation(pylab.gcf(), animate, frames = len(frames), interval=33)
+        anim.save(str(episode)+'_gameplay.gif', writer=animation.PillowWriter(fps=10))
 
 class TradingGraph:
     # A crypto trading visualization using matplotlib made to render custom prices which come in following way:
@@ -49,7 +80,9 @@ class TradingGraph:
 
         # Formatting Date
         self.date_format = mpl_dates.DateFormatter('%d-%m-%Y')
-        #self.date_format = mpl_dates.DateFormatter('%d-%m-%Y')
+
+        # Add paddings to make graph easier to view
+        #plt.subplots_adjust(left=0.07, bottom=-0.1, right=0.93, top=0.97, wspace=0, hspace=0)
 
         # define if show indicators
         if self.Show_indicators:
@@ -59,36 +92,39 @@ class TradingGraph:
         # Create a new axis for indicatorswhich shares its x-axis with volume
         self.ax4 = self.ax2.twinx()
 
-        self.ticker_number_of_tweets = deque(maxlen=self.Render_range)
+        self.sma7 = deque(maxlen=self.Render_range)
+        self.sma25 = deque(maxlen=self.Render_range)
+        self.sma99 = deque(maxlen=self.Render_range)
 
-        #self.sma25 = deque(maxlen=self.Render_range)
-        #self.sma99 = deque(maxlen=self.Render_range)
-        #self.bb_bbm = deque(maxlen=self.Render_range)
-        #self.bb_bbh = deque(maxlen=self.Render_range)
-        #self.bb_bbl = deque(maxlen=self.Render_range)
-        #self.psar = deque(maxlen=self.Render_range)
-        #self.MACD = deque(maxlen=self.Render_range)
-        #self.RSI = deque(maxlen=self.Render_range)
+        self.bb_bbm = deque(maxlen=self.Render_range)
+        self.bb_bbh = deque(maxlen=self.Render_range)
+        self.bb_bbl = deque(maxlen=self.Render_range)
+
+        self.psar = deque(maxlen=self.Render_range)
+
+        self.MACD = deque(maxlen=self.Render_range)
+        self.RSI = deque(maxlen=self.Render_range)
 
 
     def Plot_indicators(self, df, Date_Render_range):
-        self.ticker_number_of_tweets.append(df["ticker_number_of_tweets"])
+        self.sma7.append(df["sma7"])
+        self.sma25.append(df["sma25"])
+        self.sma99.append(df["sma99"])
 
-        #self.sma25.append(df["sma25"])
-        #self.sma99.append(df["sma99"])
-        #self.bb_bbm.append(df["bb_bbm"])
-        #self.bb_bbh.append(df["bb_bbh"])
-        #self.bb_bbl.append(df["bb_bbl"])
-        #self.psar.append(df["psar"])
-        #self.MACD.append(df["MACD"])
-        #self.RSI.append(df["RSI"])
+        self.bb_bbm.append(df["bb_bbm"])
+        self.bb_bbh.append(df["bb_bbh"])
+        self.bb_bbl.append(df["bb_bbl"])
+
+        self.psar.append(df["psar"])
+
+        self.MACD.append(df["MACD"])
+        self.RSI.append(df["RSI"])
 
         # Add Simple Moving Average
-        self.ax1.plot(Date_Render_range, self.ticker_number_of_tweets,'-')
-        #self.ax1.plot(Date_Render_range, self.sma25,'-')
-        #self.ax1.plot(Date_Render_range, self.sma99,'-')
+        self.ax1.plot(Date_Render_range, self.sma7,'-')
+        self.ax1.plot(Date_Render_range, self.sma25,'-')
+        self.ax1.plot(Date_Render_range, self.sma99,'-')
 
-        """
         # Add Bollinger Bands
         self.ax1.plot(Date_Render_range, self.bb_bbm,'-')
         self.ax1.plot(Date_Render_range, self.bb_bbh,'-')
@@ -103,9 +139,10 @@ class TradingGraph:
 
         # # Add Relative Strength Index
         self.ax4.plot(Date_Render_range, self.RSI,'g-')
-        """
+
 
     # Render the environment to the screen
+    #def render(self, Date, Open, High, Low, Close, Volume, net_worth, trades):
     def render(self, df, net_worth, trades):
         Date = df["date"]
         Open = df["Price (Open)"]
@@ -123,7 +160,7 @@ class TradingGraph:
 
         # Clear the frame rendered last step
         self.ax1.clear()
-        candlestick_ohlc(self.ax1, self.render_data, width=0.4, colorup='green', colordown='red', alpha=0.8)
+        candlestick_ohlc(self.ax1, self.render_data, width=0.8, colorup='green', colordown='red', alpha=0.8)
 
         # Put all dates to one list and fill ax2 sublot with volume
         Date_Render_range = [i[0] for i in self.render_data]
@@ -173,7 +210,18 @@ class TradingGraph:
 
         # I use tight_layout to replace plt.subplots_adjust
         self.fig.tight_layout()
-        """"Display image with OpenCV - no interruption"""
+
+        """Display image with matplotlib - interrupting other tasks"""
+        self.fig.suptitle('Bitcoin trading bot', fontsize=16)
+        my_path = os.path.abspath(r'/Users/fabianwinkelmann/github/Master_thesis/Crypto_Sentiment_RL_trader/Local_files/7.Reinforcement_Learning')
+        my_file = 'BTC_test.png'
+        plt.savefig(os.path.join(my_path, my_file))
+        #Show the graph without blocking the rest of the program
+        plt.show(block=False)
+        # Necessary to view frames before they are unrendered
+        plt.pause(0.001)
+
+        """Display image with OpenCV - no interruption"""
         """
         # redraw the canvas
         self.fig.canvas.draw()
@@ -186,70 +234,101 @@ class TradingGraph:
 
         # display image with OpenCV or any operation you like
         cv2.imshow("Bitcoin trading bot",image)
-        filename = 'Bitcoin trading bot.png'
-        cv2.imwrite(filename, image)
 
         if cv2.waitKey(25) & 0xFF == ord("q"):
             cv2.destroyAllWindows()
             return
+        else:
+            return img
         """
 
-        """Display image with matplotlib -interrupting other tasks """
-        self.fig.suptitle('Bitcoin trading bot', fontsize=16)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/github/Master_thesis/Crypto_Sentiment_RL_trader/Local_files/7.Reinforcement_Learning')
-        my_file = 'BTC_test.png'
-        plt.savefig(os.path.join(my_path, my_file))
-        #Show the graph without blocking the rest of the program
-        plt.show(block=False)
-        # Necessary to view frames before they are unrendered
-        plt.pause(0.001)
 
-    def Plot_OHCL(df):
-        df_original = df.copy()
-        # necessary convert to datetime
-        df["date"] = pd.to_datetime(df.date)
-        df["date"] = df["date"].apply(mpl_dates.date2num)
+def Plot_OHCL(df):
+    df_original = df.copy()
+    # necessary convert to datetime
+    df["date"] = pd.to_datetime(df.Date)
+    df["date"] = df["date"].apply(mpl_dates.date2num)
 
-        df = df[['date', 'Price (Open)', 'Price (High)', 'Price (Low)', 'Price (Close)', 'Real Volume']]
+    df = df[['date', 'Price (Open)', 'Price (High)', 'Price (Low)', 'Price (Close)', 'Real Volume']]
 
-        # We are using the style ‘ggplot’
-        plt.style.use('ggplot')
+    # We are using the style ‘ggplot’
+    plt.style.use('ggplot')
 
-        # figsize attribute alPrice (Price (Low))s us to specify the width and height of a figure in unit inches
-        fig = plt.figure(figsize=(16,8))
+    # figsize attribute allows us to specify the width and height of a figure in unit inches
+    fig = plt.figure(figsize=(16,8))
 
-        # Create top subplot for price axis
-        ax1 = plt.subplot2grid((6,1), (0,0), rowspan=5, colspan=1)
+    # Create top subplot for price axis
+    ax1 = plt.subplot2grid((6,1), (0,0), rowspan=5, colspan=1)
 
-        # Create bottom subplot for volume which shares its x-axis
-        ax2 = plt.subplot2grid((6,1), (5,0), rowspan=1, colspan=1, sharex=ax1)
+    # Create bottom subplot for volume which shares its x-axis
+    ax2 = plt.subplot2grid((6,1), (5,0), rowspan=1, colspan=1, sharex=ax1)
 
-        candlestick_ohlc(ax1, df.values, width=0.8/24, colorup='green', colordown='red', alpha=0.8)
-        ax1.set_ylabel('Price', fontsize=12)
-        plt.xlabel('date')
-        plt.xticks(rotation=45)
+    candlestick_ohlc(ax1, df.values, width=0.8, colorup='green', colordown='red', alpha=0.8)
+    ax1.set_ylabel('Price', fontsize=12)
+    plt.xlabel('Date')
+    plt.xticks(rotation=45)
 
-        # Add Simple Moving Average
-        ax1.plot(df["date"], df_original['ticker_number_of_tweets'],'-')
+    """
+    # Add Simple Moving Average
+    ax1.plot(df["Date"], df_original['sma7'],'-')
+    ax1.plot(df["Date"], df_original['sma25'],'-')
+    ax1.plot(df["Date"], df_original['sma99'],'-')
 
-        """
-        ax1.plot(df["date"], df_original['sma25'],'-')
-        ax1.plot(df["date"], df_original['sma99'],'-')
-        # Add Bollinger Bands
-        ax1.plot(df["date"], df_original['bb_bbm'],'-')
-        ax1.plot(df["date"], df_original['bb_bbh'],'-')
-        ax1.plot(df["date"], df_original['bb_bbl'],'-')
-        # Add Parabolic Stop and Reverse
-        ax1.plot(df["date"], df_original['psar'],'.')
-        # # Add Moving Average Convergence Divergence
-        ax2.plot(df["date"], df_original['MACD'],'-')
-        # # Add Relative Strength Index
-        ax2.plot(df["date"], df_original['RSI'],'-')
-        """
+    # Add Bollinger Bands
+    ax1.plot(df["Date"], df_original['bb_bbm'],'-')
+    ax1.plot(df["Date"], df_original['bb_bbh'],'-')
+    ax1.plot(df["Date"], df_original['bb_bbl'],'-')
 
-        # beautify the x-labels (Our Date format)
-        ax1.xaxis.set_major_formatter(mpl_dates.DateFormatter('%y-%m-%d'))# %H:%M:%S'))
-        fig.autofmt_xdate()
-        fig.tight_layout()
+    # Add Parabolic Stop and Reverse
+    ax1.plot(df["Date"], df_original['psar'],'.')
 
-        plt.show()
+    # # Add Moving Average Convergence Divergence
+    ax2.plot(df["Date"], df_original['MACD'],'-')
+
+    # # Add Relative Strength Index
+    ax2.plot(df["Date"], df_original['RSI'],'-')
+    """
+
+    # beautify the x-labels (Our Date format)
+    ax1.xaxis.set_major_formatter(mpl_dates.DateFormatter('%y-%m-%d'))# %H:%M:%S'))
+    fig.autofmt_xdate()
+    fig.tight_layout()
+
+    plt.show()
+
+def Normalizing(df_original):
+    df = df_original.copy()
+    column_names = df.columns.tolist()
+    for column in column_names[1:]:
+        # Logging and Differencing
+        test = np.log(df[column]) - np.log(df[column].shift(1))
+        if test[1:].isnull().any():
+            df[column] = df[column] - df[column].shift(1)
+        else:
+            df[column] = np.log(df[column]) - np.log(df[column].shift(1))
+        # Min Max Scaler implemented
+        Min = df[column].min()
+        Max = df[column].max()
+        df[column] = (df[column] - Min) / (Max - Min)
+
+    return df
+
+if __name__ == "__main__":
+    # testing normalization technieques
+    df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/complete_feature_set_BTC.csv')
+    feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume","ticker_number_of_tweets", "ticker_finiteautomata_sentiment", "ticker_finiteautomata_sentiment_expectation_value_volatility", "ticker_average_number_of_followers","Momentum_14_ticker_finiteautomata_sentiment","MOM_14","Volatility","RSI_14"]
+    df = df.loc[:,feature_list]
+
+    #df["Close"] = df["Close"] - df["Close"].shift(1)
+    df["Price (Close)"] = np.log(df["Price (Close)"]) - np.log(df["Price (Close)"].shift(1))
+
+    Min = df["Price (Close)"].min()
+    Max = df["Price (Close)"].max()
+    df["Price (Close)"] = (df["Price (Close)"] - Min) / (Max - Min)
+
+    fig = plt.figure(figsize=(16,8))
+    plt.plot(df["Price (Close)"],'-')
+    ax=plt.gca()
+    ax.grid(True)
+    fig.tight_layout()
+    plt.show()

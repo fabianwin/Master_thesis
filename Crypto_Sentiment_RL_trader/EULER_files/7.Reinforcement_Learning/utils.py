@@ -213,8 +213,8 @@ class TradingGraph:
 
         """Display image with matplotlib - interrupting other tasks"""
         self.fig.suptitle('Bitcoin trading bot', fontsize=16)
-        my_path = os.path.abspath(r'/Users/fabianwinkelmann/github/Master_thesis/Crypto_Sentiment_RL_trader/Local_files/7.Reinforcement_Learning')
-        my_file = 'BTC_test.png'
+        my_path = os.path.abspath(r'Graphs')
+        my_file = 'test.png'
         plt.savefig(os.path.join(my_path, my_file))
         #Show the graph without blocking the rest of the program
         plt.show(block=False)
