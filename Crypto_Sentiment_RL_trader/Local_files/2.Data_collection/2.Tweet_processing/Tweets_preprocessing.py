@@ -5,7 +5,6 @@ from functions import preprocess_tweets
 from functions import preprocess
 
 #################Ticker Sets##################
-"""
 classic_coins = ['#BTC', '#ETH']
 venture_capital_backed_coins = ['#BNB','#SOL', '#ADA', '#XRP']
 community_driven_coins = ['#DOGE', '#SHIB']
@@ -25,7 +24,7 @@ for coin in coin_list_ticker:
     df.to_csv(os.path.join(my_path, my_file))
 
 print("All Ticker sets are preprocessed")
-"""
+
 #################Product Sets##################
 classic_coins = ['BITCOIN', 'ETHEREUM']
 venture_capital_backed_coins = ['BINANCE', 'CARDANO', 'RIPPLE']

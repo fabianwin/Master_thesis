@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 import pandas as pd
 import numpy as np
 from pysentimiento.preprocessing import preprocess_tweet
+import os
 
 def preprocess_tweets(df):
     for n,row in df.iterrows():
@@ -19,7 +20,7 @@ def preprocess_tweets(df):
         # Remove &amp - is HTML code for hyperlink
         tweet = re.sub(r'\&amp;','&', tweet)
         #Replace emoji with text
-        tweet = emoji.demojize(text, language="en", delimiters=(" ", " "))
+        tweet = emoji.demojize(tweet, language="en", delimiters=(" ", " "))
         df.at[n,'content'] =  tweet
 
     return df
@@ -32,3 +33,6 @@ def preprocess(df):
         print(n)
 
     return df
+#----------------------------
+df =pd.read_csv(r'/Users/fabian/Downloads/texts.csv')
+print(df)

@@ -159,6 +159,7 @@ class CustomEnv:
 
         # Market history contains the OHCL values for the last lookback_window_size prices
         self.market_history = deque(maxlen=self.lookback_window_size)
+        self.indicators_history = deque(maxlen=self.lookback_window_size)
 
         self.normalize_value = normalize_value
 
@@ -225,7 +226,8 @@ class CustomEnv:
                                     self.df.loc[self.current_step, 'Real Volume']
                                     ])
 
-        self.indicators_history.append([self.df.loc[current_step, 'ticker_number_of_tweets'] / self.normalize_value])
+        #self.indicators_history.append([self.df.loc[self.current_step, 'ticker_number_of_tweets'] / self.normalize_value])
+        self.indicators_history.append([self.df.loc[self.current_step, 'ticker_number_of_tweets']])
                                     #self.df.loc[current_step, 'sma25'] / self.normalize_value,
                                     #self.df.loc[current_step, 'sma99'] / self.normalize_value,
                                     #self.df.loc[current_step, 'bb_bbm'] / self.normalize_value,
@@ -237,7 +239,7 @@ class CustomEnv:
                                     #])
 
         obs = np.concatenate((self.market_history, self.orders_history), axis=1) / self.normalize_value
-        obs = np.concatenate((state, self.indicators_history), axis=1)
+        obs = np.concatenate((obs, self.indicators_history), axis=1)
 
         return obs
 
@@ -419,30 +421,33 @@ def test_agent(env, agent, visualize=True, test_episodes=10, folder="", name="Cr
 if __name__ == "__main__":
     df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/complete_feature_set_BTC.csv')
     df.info(verbose=True)
-
+    df.ticker_number_of_tweets.fillna(method="ffill", inplace=True)
+    df.info(verbose=True)
 
     lookback_window_size = 60
     test_window = 150
     train_df = df[:-test_window-lookback_window_size]
     test_df = df[-test_window-lookback_window_size:]
 
-    """
+
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=1, optimizer=Adam, batch_size = 32, model="Dense")
     train_env = CustomEnv(train_df, lookback_window_size=lookback_window_size)
     train_agent(train_env, agent, visualize=False, train_episodes=50000, training_batch_size=100)
     test_env = CustomEnv(test_df, lookback_window_size=lookback_window_size, Show_reward=False)
     #test_agent(test_env, agent, visualize=False, test_episodes=10, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_02_25_01_37_Crypto_trader", name="1001.04_Crypto_trader", comment="")
-    """
 
+    """
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=1, optimizer=Adam, batch_size = 32, model="CNN")
     train_env = CustomEnv(train_df, lookback_window_size=lookback_window_size)
-    train_agent(train_env, agent, visualize=False, train_episodes=5000, training_batch_size=100)
-    test_env = CustomEnv(test_df, lookback_window_size=lookback_window_size, Show_reward=False, Show_indicators=True)
-    #test_agent(test_env, agent, visualize=True, test_episodes=10, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_02_25_09_25_Crypto_trader", name="1164.82_Crypto_trader", comment="")
+    train_agent(train_env, agent, visualize=False, train_episodes=50000, training_batch_size=100)
+    #test_env = CustomEnv(test_df, lookback_window_size=lookback_window_size, Show_reward=False, Show_indicators=False)
+    #date_folder_name = "2022_02_27_22_07_Crypto_trader"
+    #folder_name = "/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/" + date_folder_name
+    #test_agent(test_env, agent, visualize=True, test_episodes=10, folder=folder_name, name="1447.92_Crypto_trader", comment="")
 
-    """
+
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=1, optimizer=Adam, batch_size = 128, model="LSTM")
-    #train_agent(train_env, agent, visualize=False, train_episodes=500, training_batch_size=100)
+    train_agent(train_env, agent, visualize=False, train_episodes=50000, training_batch_size=100)
     test_env = CustomEnv(test_df, lookback_window_size=lookback_window_size, Show_reward=False)
     #test_agent(test_env, agent, visualize=False, test_episodes=10, folder="2021_01_11_23_43_Crypto_trader", name="1076.27_Crypto_trader", comment="")
     """

@@ -28,10 +28,25 @@ def perform_sentiment_analysis(df):
     print(f"total time {toc_5 - toc_0:0.4f} seconds")
     return df
 
+classic_coins = ['BITCOIN', 'ETHEREUM']
+venture_capital_backed_coins = ['BINANCE', 'CARDANO', 'RIPPLE']
+community_driven_coins = ['DOGECOIN', 'SHIBA_INU']
+coin_list_product = classic_coins + venture_capital_backed_coins + community_driven_coins
+for coin in coin_list_product:
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/2.Twitter_processing')
+    my_file = 'product_set_preprocessed_'+coin+".csv"
+    df = pd.read_csv(os.path.join(my_path, my_file))
+    df = perform_sentiment_analysis(df)
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis/')
+    my_file = 'product_set_sentiment_'+coin+".csv"
+    df.to_csv(os.path.join(my_path, my_file))
 
-#load dataframe
-eisner_tweets = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/2.Tweet_processing/eisner_tweets.csv')
-
-print(eisner_tweets.dtypes)
-eisner_tweets = perform_sentiment_analysis(eisner_tweets)
-eisner_tweets.to_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/3.Sentiment_Analysis/eisner_tweets.csv', index = False)
+coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
+for coin in coins:
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/2.Twitter_processing')
+    my_file = 'ticker_set_preprocessed_#'+coin+".csv"
+    df = pd.read_csv(os.path.join(my_path, my_file))
+    df = perform_sentiment_analysis(df)
+    my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/3.Sentiment_Analysis/')
+    my_file = 'ticker_set_sentiment_#'+coin+".csv"
+    df.to_csv(os.path.join(my_path, my_file))
