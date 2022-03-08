@@ -464,17 +464,17 @@ if __name__ == "__main__":
 
     # ticker sentiments
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
-    feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
+    feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
     df = df.loc[:,feature_list]
-    """
+
     # product sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
+    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_2
     print(feature_list)
-    df = df.loc[:,feature_list]
+    df = df.loc[:,feature_list_2]
 
-    
+    """
     # finance features
     feature_list_3 = ["Circulating Marketcap", "Adjusted NVT","Adjusted RVT", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
     feature_list = mandatory_features + feature_list_3
