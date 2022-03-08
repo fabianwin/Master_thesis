@@ -474,7 +474,7 @@ if __name__ == "__main__":
     print(feature_list)
     for i in feature_list:
         print(i)
-        print(df[i])
+        #print(df[i])
     #df = df.loc[:,feature_list_2]
 
     """
