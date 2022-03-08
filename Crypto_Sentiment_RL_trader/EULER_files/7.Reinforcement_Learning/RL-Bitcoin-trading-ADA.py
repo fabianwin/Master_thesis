@@ -460,20 +460,21 @@ if __name__ == "__main__":
     #df = pd.read_csv(r'Daily_trading/complete_feature_set_DOGE.csv')
     #df = pd.read_csv(r'Daily_trading/complete_feature_set_ETH.csv')
     #df = pd.read_csv(r'Daily_trading/complete_feature_set_XRP.csv')
-    df.info(verbose=True)
-
 
     # ticker sentiments
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
     df = df.loc[:,feature_list]
+    df.info(verbose=True)
 
     # product sentiments
     feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_2
+    print(feature_list)
     df = df.loc[:,feature_list]
 
+    """
     # finance features
     feature_list_3 = ["Circulating Marketcap", "Adjusted NVT","Adjusted RVT", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
     feature_list = mandatory_features + feature_list_3
@@ -525,3 +526,4 @@ if __name__ == "__main__":
 
     #train
     #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/XRP/2022_03_08_19_30_Crypto_trader", name="1492.19_Crypto_trader", comment="3 months")
+    """
