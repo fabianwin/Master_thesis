@@ -9,7 +9,7 @@
 #
 #================================================================
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+#os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import copy
 import pandas as pd
 import numpy as np
