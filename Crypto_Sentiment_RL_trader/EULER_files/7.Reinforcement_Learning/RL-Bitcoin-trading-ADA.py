@@ -486,7 +486,7 @@ if __name__ == "__main__":
     feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_big = mandatory_features+ feature_list_1 + feature_list_2 + feature_list_3 + feature_list_4
     df = df.loc[:,feature_list_big]
-    """
+
     ##################################
     df.fillna(method="ffill", inplace=True)
     df = df.dropna()
@@ -500,7 +500,7 @@ if __name__ == "__main__":
     train_df_nomalized = df_nomalized[:-test_window-lookback_window_size]
     test_df_nomalized = df_nomalized[-test_window-lookback_window_size:]
     ##################################
-
+    """
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
     #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=300000)
