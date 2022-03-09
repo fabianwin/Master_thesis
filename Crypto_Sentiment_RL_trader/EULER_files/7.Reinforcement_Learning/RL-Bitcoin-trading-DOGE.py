@@ -39,7 +39,7 @@ class CustomAgent:
 
         # folder to save models
         # folder to save models
-        path = "DOGE/"
+        path = "DOGE_all/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
         # State size contains Market+Orders+Indicators history for the last lookback_window_size steps
