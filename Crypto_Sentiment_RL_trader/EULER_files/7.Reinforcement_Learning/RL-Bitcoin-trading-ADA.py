@@ -488,6 +488,7 @@ if __name__ == "__main__":
     #df = df.loc[:,feature_list]
 
     # all features togehter
+    feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_big = mandatory_features+ feature_list_1 + feature_list_2 + feature_list_3 + feature_list_4
     df = df.loc[:,feature_list_big]
 
