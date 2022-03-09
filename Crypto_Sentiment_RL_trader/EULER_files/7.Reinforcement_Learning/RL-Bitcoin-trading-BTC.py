@@ -472,8 +472,7 @@ if __name__ == "__main__":
     #df = df.loc[:,feature_list]
 
     # All sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
-    feature_list = mandatory_features + feature_list_1 + feature_list_2
+    #feature_list = mandatory_features + feature_list_1 + feature_list_2
     #df = df.loc[:,feature_list]
 
     # finance features
