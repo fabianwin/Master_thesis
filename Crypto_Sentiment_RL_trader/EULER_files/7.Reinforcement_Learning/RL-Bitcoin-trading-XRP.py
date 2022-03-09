@@ -472,6 +472,10 @@ if __name__ == "__main__":
     feature_list = mandatory_features + feature_list_2
     #df = df.loc[:,feature_list]
 
+    # All sentiments
+    feature_list = mandatory_features + feature_list_1 + feature_list_2
+    #df = df.loc[:,feature_list]
+
     # finance features
     feature_list_3 = ["Circulating Marketcap", "Adjusted NVT","Adjusted RVT", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
     feature_list = mandatory_features + feature_list_3
