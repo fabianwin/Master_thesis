@@ -38,7 +38,6 @@ class CustomAgent:
         self.action_space = np.array([0, 1, 2])
 
         # folder to save models
-        # folder to save models
         path = "BNB_ticker/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
