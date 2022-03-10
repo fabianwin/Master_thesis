@@ -39,7 +39,7 @@ class CustomAgent:
 
         # folder to save models
         # folder to save models
-        path = "DOGE_non_product/"
+        path = "DOGE_all/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
         # State size contains Market+Orders+Indicators history for the last lookback_window_size steps
@@ -508,7 +508,7 @@ if __name__ == "__main__":
 
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #product sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Product Features")
