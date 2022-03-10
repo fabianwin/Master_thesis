@@ -39,7 +39,7 @@ class CustomAgent:
 
         # folder to save models
         # folder to save models
-        path = "DOGE_sentiment/"
+        path = "DOGE_ticker/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
         # State size contains Market+Orders+Indicators history for the last lookback_window_size steps
@@ -465,7 +465,7 @@ if __name__ == "__main__":
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
-    #df = df.loc[:,feature_list]
+    df = df.loc[:,feature_list]
 
     # product sentiments
     feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
@@ -475,7 +475,7 @@ if __name__ == "__main__":
     # All sentiments
     feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1 + feature_list_2
-    df = df.loc[:,feature_list]
+    #df = df.loc[:,feature_list]
 
     # finance features
     feature_list_3 = ["Circulating Marketcap", "Adjusted NVT","Adjusted RVT", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
@@ -508,7 +508,7 @@ if __name__ == "__main__":
 
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #product sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Product Features")
@@ -516,7 +516,7 @@ if __name__ == "__main__":
 
     #All sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All Sentiment Features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #finance features
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Finance Features")
