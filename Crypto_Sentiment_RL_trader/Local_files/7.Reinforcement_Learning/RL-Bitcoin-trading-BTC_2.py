@@ -558,8 +558,8 @@ if __name__ == "__main__":
     train_df_nomalized = df_nomalized[:-test_window-lookback_window_size]
     test_df_nomalized = df_nomalized[-test_window-lookback_window_size:]
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=200000)
-    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 16, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_03_04_00_07_Crypto_trader", name="11457.44_Crypto_trader", comment="BEST BTC Finance")
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=200000)
+    test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_03_04_09_57_Crypto_trader", name="10790.63_Crypto_trader", comment="All features")
 
 
     #fill NaN values

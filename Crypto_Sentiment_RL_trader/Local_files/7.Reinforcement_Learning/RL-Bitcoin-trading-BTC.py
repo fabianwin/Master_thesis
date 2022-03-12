@@ -39,7 +39,7 @@ class CustomAgent:
 
         # folder to save models
         # folder to save models
-        path = "/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/"
+        path = "/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/BTC/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
         # State size contains Market+Orders+Indicators history for the last lookback_window_size steps
@@ -456,20 +456,19 @@ def test_agent(test_df, test_df_nomalized, visualize=True, test_episodes=10, fol
 if __name__ == "__main__":
     df = pd.read_csv(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/4.Feature_Engineering/Daily_trading/complete_feature_set_BTC.csv')
 
-
     # ticker sentiments
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
-    feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
+    feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ticker_finiteautomata_sentiment_expectation_value_volatility","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
-    #df = df.loc[:,feature_list]
+    df = df.loc[:,feature_list]
 
     # product sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
+    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","product_finiteautomata_sentiment_expectation_value_volatility","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_2
     #df = df.loc[:,feature_list]
 
     # All sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
+    #feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1 + feature_list_2
     #df = df.loc[:,feature_list]
 
@@ -486,7 +485,7 @@ if __name__ == "__main__":
     # all features togehter
     feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_big = mandatory_features+ feature_list_1 + feature_list_2 + feature_list_3 + feature_list_4
-    df = df.loc[:,feature_list_big]
+    #df = df.loc[:,feature_list_big]
 
     ##################################
     df.fillna(method="ffill", inplace=True)
@@ -504,7 +503,7 @@ if __name__ == "__main__":
 
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #product sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Product Features")
@@ -524,7 +523,7 @@ if __name__ == "__main__":
 
     # all features togehter
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=100000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #train
-    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/XRP/2022_03_08_19_30_Crypto_trader", name="1492.19_Crypto_trader", comment="3 months")
+    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_03_04_09_57_Crypto_trader", name="10790.63_Crypto_trader", comment="All features")
