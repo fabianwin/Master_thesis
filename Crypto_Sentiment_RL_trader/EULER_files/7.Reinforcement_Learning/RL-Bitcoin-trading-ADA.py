@@ -479,12 +479,12 @@ if __name__ == "__main__":
     # finance features
     feature_list_3 = ["Circulating Marketcap", "Adjusted NVT","Adjusted RVT", "Sharpe Ratio", "Volatility", "MOM_14","RSI_14","pos_conf","neg_conf"]
     feature_list = mandatory_features + feature_list_3
-    df = df.loc[:,feature_list]
+    #df = df.loc[:,feature_list]
 
     # network features
     feature_list_4 = ["Median Transaction Fees", "Adjusted Transaction Volume", "Median Transfer Value","Transactions Count", "Active Supply", "Addresses Count", "Active Addresses Count", "Active Addresses Count (Received)","Active Addresses Count (Sent)","Addresses with balance greater than $1"]
     feature_list = mandatory_features + feature_list_4
-    #df = df.loc[:,feature_list]
+    df = df.loc[:,feature_list]
 
     # all features togehter
     feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
@@ -519,11 +519,11 @@ if __name__ == "__main__":
 
     #finance features
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Finance Features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     # network features
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Network Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     # all features togehter
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All features")
