@@ -460,7 +460,7 @@ if __name__ == "__main__":
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ticker_finiteautomata_sentiment_expectation_value_volatility","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
-    df = df.loc[:,feature_list]
+    #df = df.loc[:,feature_list]
 
     # product sentiments
     feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","product_finiteautomata_sentiment_expectation_value_volatility","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
@@ -485,7 +485,7 @@ if __name__ == "__main__":
     # all features togehter
     feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_big = mandatory_features+ feature_list_1 + feature_list_2 + feature_list_3 + feature_list_4
-    #df = df.loc[:,feature_list_big]
+    df = df.loc[:,feature_list_big]
 
     ##################################
     df.fillna(method="ffill", inplace=True)
@@ -503,11 +503,11 @@ if __name__ == "__main__":
 
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #product sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Product Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=50, visualize=True, EPISODES=400000)
 
     #All sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All Sentiment Features")
@@ -526,4 +526,4 @@ if __name__ == "__main__":
     #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #train
-    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Variable_files/2022_03_04_09_57_Crypto_trader", name="10790.63_Crypto_trader", comment="All features")
+    test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/BTC/All_features_1", name="13606.95_Crypto_trader", comment="All features")
