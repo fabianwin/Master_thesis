@@ -1,21 +1,18 @@
-2022-02-23 14:59, 1984.93_Crypto_trader, test episodes:1000, net worth:1260.0181185367692, orders per episode:237.39, no profit episodes:1, comment: Dense
-2022-02-25 09:35, 1164.82_Crypto_trader, test episodes:10, net worth:1163.5437948279464, orders per episode:63.1, no profit episodes:3, model: CNN, comment: 
-2022-02-25 09:48, 1001.04_Crypto_trader, test episodes:10, net worth:1000.0, orders per episode:0.0, no profit episodes:0, model: Dense, comment: 
-2022-02-25 10:14, 1001.04_Crypto_trader, test episodes:10, net worth:1000.0, orders per episode:0.0, no profit episodes:0, model: Dense, comment: 
-2022-02-27 22:32, 1447.92_Crypto_trader, test episodes:10, net worth:1102.5161643075878, orders per episode:21.2, no profit episodes:7, model: CNN, comment: 
-2022-02-27 22:33, 1447.92_Crypto_trader, test episodes:10, net worth:1047.34675947172, orders per episode:21.2, no profit episodes:4, model: CNN, comment: 
-2022-03-01 00:32, 1293.00_Crypto_trader, test episodes:50, net worth:1100.949155832053, orders per episode:27.76, no profit episodes:18, model: CNN, comment: 3 months
-2022-03-01 09:35, 2065.96_Crypto_trader, test episodes:1000, net worth:1167.107032586366, orders per episode:29.842, no profit episodes:116, model: CNN, comment: 3 months
-2022-03-04 09:54, 11457.44_Crypto_trader, test episodes:1000, net worth:975.675048073454, orders per episode:61.715, no profit episodes:608, model: CNN, comment: 3 months
-2022-03-04 09:56, 11457.44_Crypto_trader, test episodes:1000, net worth:973.3486802274809, orders per episode:61.857, no profit episodes:617, model: CNN, comment: 3 months
-2022-03-04 16:58, 10790.63_Crypto_trader, test episodes:1000, net worth:1580.7836768096406, orders per episode:62.678, no profit episodes:0, model: CNN, comment: 3 months
-2022-03-05 23:41, 10267.11_Crypto_trader, test episodes:1000, net worth:847.7551837888749, orders per episode:39.749, no profit episodes:794, model: CNN, comment: 3 months
-2022-03-05 23:44, 10790.63_Crypto_trader, test episodes:1000, net worth:1567.0078739063465, orders per episode:62.498, no profit episodes:0, model: CNN, comment: 3 months
-2022-03-08 19:28, 10790.63_Crypto_trader, test episodes:1000, net worth:1139.769365135477, orders per episode:73.056, no profit episodes:398, model: CNN, comment: 3 months
-2022-03-08 21:16, 1492.19_Crypto_trader, test episodes:1000, net worth:903.9391897704745, orders per episode:0.71, no profit episodes:499, model: CNN, comment: 3 months
+
 2022-03-08 22:56, 1935.27_Crypto_trader, test episodes:1000, net worth:1161.7663500945205, orders per episode:25.157, no profit episodes:140, model: CNN, comment: BEST BTC Finance
 2022-03-08 22:58, 1935.27_Crypto_trader, test episodes:1000, net worth:1166.6701123135292, orders per episode:25.087, no profit episodes:127, model: CNN, comment: BEST BTC Finance
 2022-03-08 23:04, 1935.27_Crypto_trader, test episodes:1000, net worth:1168.6120634298447, orders per episode:24.988, no profit episodes:135, model: CNN, comment: BEST BTC Finance
 2022-03-08 23:08, 1935.27_Crypto_trader, test episodes:1000, net worth:1160.1313741531694, orders per episode:25.479, no profit episodes:159, model: CNN, comment: BEST BTC Finance
 2022-03-08 23:09, 10267.11_Crypto_trader, test episodes:1000, net worth:1165.6492475497564, orders per episode:23.052, no profit episodes:140, model: CNN, comment: BEST BTC Finance
 2022-03-08 23:15, 10267.11_Crypto_trader, test episodes:1000, net worth:1168.5102914616366, orders per episode:22.907, no profit episodes:133, model: CNN, comment: BEST BTC Finance
+2022-03-09 11:45, 10790.63_Crypto_trader, test episodes:1000, net worth:1571.8769005015358, orders per episode:62.546, no profit episodes:0, model: CNN, comment: All features
+2022-03-09 11:56, 10790.63_Crypto_trader, test episodes:1000, net worth:1578.888559299087, orders per episode:62.686, no profit episodes:0, model: CNN, comment: All features
+2022-03-12 12:06, 12166.06_Crypto_trader, test episodes:1000, net worth:1298.7026868092591, orders per episode:50.27, no profit episodes:0, model: CNN, comment: All features
+2022-03-12 12:08, 12309.47_Crypto_trader, test episodes:1000, net worth:1108.4138953990002, orders per episode:52.689, no profit episodes:212, model: CNN, comment: Finance Features
+2022-03-12 12:09, 11591.49_Crypto_trader, test episodes:1000, net worth:1144.226580684472, orders per episode:57.407, no profit episodes:67, model: CNN, comment: All Sentiment features
+2022-03-12 12:11, 1904.74_Crypto_trader, test episodes:1000, net worth:1041.684932197454, orders per episode:1.775, no profit episodes:309, model: CNN, comment: Ticker features
+2022-03-14 17:50, 12166.06_Crypto_trader, test episodes:1000, net worth:1297.0201220575227, orders per episode:49.958, no profit episodes:0, model: CNN, comment: All features
+2022-03-14 17:56, 10790.63_Crypto_trader, test episodes:1000, net worth:1582.6231925889613, orders per episode:62.622, no profit episodes:0, model: CNN, comment: All features
+2022-03-14 18:05, 12274.97_Crypto_trader, test episodes:1000, net worth:1057.2753259063825, orders per episode:48.658, no profit episodes:293, model: CNN, comment: All features
+2022-03-14 18:09, 8484.88_Crypto_trader, test episodes:1000, net worth:1163.0188330643118, orders per episode:49.146, no profit episodes:85, model: CNN, comment: All features
+2022-03-14 18:14, 13606.95_Crypto_trader, test episodes:1000, net worth:1317.1667823012724, orders per episode:66.058, no profit episodes:0, model: CNN, comment: All features
