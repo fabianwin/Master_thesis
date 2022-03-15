@@ -38,7 +38,6 @@ class CustomAgent:
         self.action_space = np.array([0, 1, 2])
 
         # folder to save models
-        # folder to save models
         path = "/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/BTC/"
         self.log_name = path+datetime.now().strftime("%Y_%m_%d_%H_%M")+"_Crypto_trader"
 
@@ -458,6 +457,7 @@ if __name__ == "__main__":
 
     # ticker sentiments
     mandatory_features = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
+    #feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ticker_finiteautomata_sentiment_expectation_value_volatility","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1
     #df = df.loc[:,feature_list]
@@ -480,12 +480,12 @@ if __name__ == "__main__":
     # network features
     feature_list_4 = ["Median Transaction Fees", "Adjusted Transaction Volume", "Median Transfer Value","Transactions Count", "Active Supply", "Addresses Count", "Active Addresses Count", "Active Addresses Count (Received)","Active Addresses Count (Sent)","Addresses with balance greater than $1"]
     feature_list = mandatory_features + feature_list_4
-    #df = df.loc[:,feature_list]
+    df = df.loc[:,feature_list]
 
     # all features togehter
     feature_list = ["date","Price (Open)","Price (High)","Price (Low)","Price (Close)","Real Volume"]
     feature_list_big = mandatory_features+ feature_list_1 + feature_list_2 + feature_list_3 + feature_list_4
-    df = df.loc[:,feature_list_big]
+    #df = df.loc[:,feature_list_big]
 
     ##################################
     df.fillna(method="ffill", inplace=True)
@@ -526,4 +526,4 @@ if __name__ == "__main__":
     #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
 
     #train
-    test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/BTC/All_features_1", name="13606.95_Crypto_trader", comment="All features")
+    test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/BTC/Network_features", name="8336.62_Crypto_trader", comment="Network features")
