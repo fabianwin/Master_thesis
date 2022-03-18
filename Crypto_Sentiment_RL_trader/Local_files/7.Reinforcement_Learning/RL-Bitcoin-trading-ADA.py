@@ -1,15 +1,4 @@
-#================================================================
-#
-#   File name   : RL-Bitcoin-trading-bot_7.py
-#   Author      : PyLessons
-#   Created date: 2021-02-25
-#   Website     : https://pylessons.com/
-#   GitHub      : https://github.com/pythonlessons/RL-Bitcoin-trading-bot
-#   Description : Trading Crypto with Reinforcement Learning #7
-#
-#================================================================
 import os
-#os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import copy
 import pandas as pd
 import numpy as np
@@ -27,7 +16,7 @@ import json
 
 
 class CustomAgent:
-    # A custom Bitcoin trading agent
+    # A custom trading agent
     def __init__(self, lookback_window_size=50, lr=0.00005, epochs=1, optimizer=Adam, batch_size=32, model="", depth=0, comment=""):
         self.lookback_window_size = lookback_window_size
         self.model = model
@@ -462,13 +451,12 @@ if __name__ == "__main__":
     feature_list = mandatory_features + feature_list_1
     #df = df.loc[:,feature_list]
 
-    # product sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","product_finiteautomata_sentiment_expectation_value_volatility","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
+    # news sentiments
+    feature_list_2 = ["news_number_of_tweets", "news_average_number_of_likes", "news_average_number_of_retweets", "news_average_number_of_followers", "news_finiteautomata_sentiment","news_finiteautomata_sentiment_expectation_value_volatility","ROC_2_news_finiteautomata_sentiment","Momentum_14_news_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_2
     #df = df.loc[:,feature_list]
 
     # All sentiments
-    feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
     feature_list = mandatory_features + feature_list_1 + feature_list_2
     #df = df.loc[:,feature_list]
 
@@ -503,27 +491,32 @@ if __name__ == "__main__":
 
     #ticker sentiment
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Ticker Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=75000)
 
-    #product sentiments
-    agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Product Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #news sentiments
+    agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="news Features")
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=50, visualize=True, EPISODES=75000)
 
     #All sentiments
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All Sentiment Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=70000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=75000)
 
     #finance features
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Finance Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=75000)
 
     # network features
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="Network Features")
-    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=400000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=75000)
 
     # all features togehter
     agent = CustomAgent(lookback_window_size=lookback_window_size, lr=0.00001, epochs=5, optimizer=Adam, batch_size=32, model="CNN", depth=depth, comment="All features")
-    train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=70000)
+    #train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_worker = 32, training_batch_size=150, visualize=False, EPISODES=75000)
 
     #train
-    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 10, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/XRP/2022_03_08_19_30_Crypto_trader", name="1492.19_Crypto_trader", comment="3 months")
+    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 32, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/ADA/All_features", name="11491.09_Crypto_trader", comment="All features")
+    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 32, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/ADA/Finance_features", name="4537.54_Crypto_trader", comment="Finance features")
+    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 32, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/ADA/Network_features", name="1274.15_Crypto_trader", comment="Network features")
+    #test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num_worker = 32, visualize=False, test_episodes=1000, folder="/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/7.Reinforcement_Learning/Best_actors/ADA/Sentiment_features", name="6046.81_Crypto_trader", comment="Sentiment features")
+    train_env = CustomEnv(test_df,test_df_nomalized, lookback_window_size=lookback_window_size)
+    Random_games(train_env, visualize=False, test_episodes = 1000, comment="random games")

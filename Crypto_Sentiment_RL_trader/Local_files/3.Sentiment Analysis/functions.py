@@ -14,7 +14,7 @@ import flair
 from flair.data import Sentence
 from textblob import TextBlob
 
-
+#not in thesis as it takes to long to compile
 def get_stanford_sentiment(df):
     """
     - Parameters: df, df has all the tweets info stored with preprocessed tweets
@@ -97,6 +97,7 @@ def get_finiteautomata_sentiment(df):
     return df
 
 #----------------------------------------------
+#not in thesis as it performs slightly worse than finiteautomata_sentiment
 def get_cardiffnlp_sentiment(df):
     # Tasks:
     # emoji, emotion, hate, irony, offensive, sentiment

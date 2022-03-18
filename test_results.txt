@@ -1,4 +1,4 @@
-
+1210.60 
 2022-03-08 22:56, 1935.27_Crypto_trader, test episodes:1000, net worth:1161.7663500945205, orders per episode:25.157, no profit episodes:140, model: CNN, comment: BEST BTC Finance
 2022-03-08 22:58, 1935.27_Crypto_trader, test episodes:1000, net worth:1166.6701123135292, orders per episode:25.087, no profit episodes:127, model: CNN, comment: BEST BTC Finance
 2022-03-08 23:04, 1935.27_Crypto_trader, test episodes:1000, net worth:1168.6120634298447, orders per episode:24.988, no profit episodes:135, model: CNN, comment: BEST BTC Finance
@@ -60,3 +60,52 @@
 2022-03-15 23:35, 4905.58_Crypto_trader, test episodes:1000, net worth:979.8578464363109, orders per episode:44.647, no profit episodes:606, model: CNN, comment: Finance features
 2022-03-15 23:37, 2801.28_Crypto_trader, test episodes:1000, net worth:1151.7570295262042, orders per episode:7.415, no profit episodes:94, model: CNN, comment: Network features
 2022-03-15 23:38, 2153.03_Crypto_trader, test episodes:1000, net worth:1044.949120649407, orders per episode:1.556, no profit episodes:231, model: CNN, comment: Sentiment features
+2022-03-16 00:23, 6046.81_Crypto_trader, test episodes:1000, net worth:1034.8626790776661, orders per episode:33.079, no profit episodes:464, model: CNN, comment: Sentiment features
+2022-03-16 00:24, 1274.15_Crypto_trader, test episodes:1000, net worth:1033.7492340051137, orders per episode:53.361, no profit episodes:516, model: CNN, comment: Network features
+2022-03-16 00:26, 4537.54_Crypto_trader, test episodes:1000, net worth:1084.807468436507, orders per episode:15.897, no profit episodes:407, model: CNN, comment: Finance features
+2022-03-16 00:32, 11491.09_Crypto_trader, test episodes:1000, net worth:1006.8470551863501, orders per episode:4.529, no profit episodes:464, model: CNN, comment: All features
+2022-03-16 00:39, 8682.34_Crypto_trader, test episodes:1000, net worth:986.4940187360302, orders per episode:1.0, no profit episodes:1000, model: CNN, comment: All features
+2022-03-16 01:26, 3786.54_Crypto_trader, test episodes:1000, net worth:1473.2157871804702, orders per episode:36.187, no profit episodes:16, model: CNN, comment: All features
+2022-03-16 01:39, 8484.88_Crypto_trader, test episodes:1, net worth:597.0463189763784, orders per episode:45.0, no profit episodes:0, model: CNN, comment: Product features
+2022-03-16 01:46, 8484.88_Crypto_trader, test episodes:1, net worth:538.0127133603719, orders per episode:47.0, no profit episodes:0, model: CNN, comment: Product features
+2022-03-16 01:55, Random games, test episodes:1, net worth:935.4384229973987, orders per episode:49.0, no profit episodes:1, comment: random games
+2022-03-16 01:58, Random games, test episodes:1000, net worth:1101.751684419528, orders per episode:49.286, no profit episodes:367, comment: random games
+2022-03-16 02:06, Random games, test episodes:1, net worth:916.7203343982001, orders per episode:47.0, no profit episodes:1, comment: random games
+2022-03-16 11:21, 1202.16_Crypto_trader, test episodes:1000, net worth:1108.6313719125787, orders per episode:34.295, no profit episodes:327, model: CNN, comment: Sentiment features
+2022-03-16 11:24, 2016.64_Crypto_trader, test episodes:1000, net worth:1335.739718124107, orders per episode:31.629, no profit episodes:49, model: CNN, comment: All features
+2022-03-16 11:28, 2050.93_Crypto_trader, test episodes:1000, net worth:1319.204570482448, orders per episode:35.718, no profit episodes:56, model: CNN, comment: All features 1
+2022-03-16 11:30, 5166.45_Crypto_trader, test episodes:1000, net worth:1370.5526411365279, orders per episode:4.098, no profit episodes:0, model: CNN, comment: Network features
+2022-03-16 11:45, 2252.51_Crypto_trader, test episodes:1000, net worth:1146.9934203832631, orders per episode:1.3, no profit episodes:1, model: CNN, comment: All features
+2022-03-16 11:59, 5348.98_Crypto_trader, test episodes:1000, net worth:1702.5783462344527, orders per episode:24.866, no profit episodes:0, model: CNN, comment: Finance features
+2022-03-16 12:01, 3651.13_Crypto_trader, test episodes:1000, net worth:1477.9155413497172, orders per episode:39.277, no profit episodes:26, model: CNN, comment: Network features
+2022-03-16 12:08, 3570.31_Crypto_trader, test episodes:1000, net worth:1472.710929920858, orders per episode:36.402, no profit episodes:20, model: CNN, comment: Sentiment features
+2022-03-16 12:32, 6124.58_Crypto_trader, test episodes:1000, net worth:966.784581711065, orders per episode:45.67, no profit episodes:592, model: CNN, comment: Network features
+2022-03-16 12:33, 1274.15_Crypto_trader, test episodes:1000, net worth:1034.4389036944424, orders per episode:53.508, no profit episodes:540, model: CNN, comment: Network features 1
+2022-03-16 12:36, 4332.91_Crypto_trader, test episodes:1000, net worth:727.075099602931, orders per episode:21.262, no profit episodes:924, model: CNN, comment: Network features
+2022-03-16 14:23, 1656.56_Crypto_trader, test episodes:1000, net worth:964.9252619964798, orders per episode:52.28, no profit episodes:594, model: CNN, comment: All features
+2022-03-16 14:25, 2727.79_Crypto_trader, test episodes:1000, net worth:948.9439200071566, orders per episode:43.727, no profit episodes:624, model: CNN, comment: Finance features
+2022-03-16 14:27, 2981.11_Crypto_trader, test episodes:1000, net worth:956.312694628657, orders per episode:52.325, no profit episodes:615, model: CNN, comment: Network features
+2022-03-16 14:29, 1794.82_Crypto_trader, test episodes:1000, net worth:938.8500652227781, orders per episode:50.992, no profit episodes:624, model: CNN, comment: Sentiment features
+2022-03-16 14:33, Random games, test episodes:1000, net worth:955.2176275170694, orders per episode:50.07, no profit episodes:627, comment: random games
+2022-03-16 14:35, Random games, test episodes:1000, net worth:1296.4123777078667, orders per episode:49.718, no profit episodes:188, comment: random games
+2022-03-16 14:37, Random games, test episodes:1000, net worth:1034.5180994890654, orders per episode:49.297, no profit episodes:502, comment: random games
+2022-03-16 14:39, Random games, test episodes:1000, net worth:1127.6985273659727, orders per episode:49.467, no profit episodes:419, comment: random games
+2022-03-16 14:42, Random games, test episodes:1000, net worth:1210.6032059772367, orders per episode:49.831, no profit episodes:272, comment: random games
+2022-03-18 02:48, Random games, test episodes:1, net worth:1245.1543282992645, orders per episode:45.0, no profit episodes:0, comment: random games
+2022-03-18 03:06, Random games, test episodes:1, net worth:675.1514139252278, orders per episode:53.0, no profit episodes:1, comment: random games
+2022-03-18 03:11, Random games, test episodes:1, net worth:1194.9071569774567, orders per episode:45.0, no profit episodes:0, comment: random games
+2022-03-18 03:25, Random games, test episodes:1, net worth:1046.6298426737658, orders per episode:51.0, no profit episodes:0, comment: random games
+2022-03-18 03:26, Random games, test episodes:1, net worth:993.9065670723256, orders per episode:56.0, no profit episodes:1, comment: random games
+2022-03-18 03:34, 10790.63_Crypto_trader, test episodes:1, net worth:720.4757059484751, orders per episode:57.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:35, 10790.63_Crypto_trader, test episodes:1, net worth:654.4323927932548, orders per episode:67.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:36, 10790.63_Crypto_trader, test episodes:1, net worth:612.5582125204841, orders per episode:61.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:36, 10790.63_Crypto_trader, test episodes:1, net worth:883.0585812235421, orders per episode:63.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:38, 10790.63_Crypto_trader, test episodes:1, net worth:907.4623342893009, orders per episode:65.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:41, 10790.63_Crypto_trader, test episodes:1, net worth:824.5157401598814, orders per episode:69.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 03:46, Random games, test episodes:1, net worth:1194.3330178748156, orders per episode:49.0, no profit episodes:0, comment: random games
+2022-03-18 03:53, Random games, test episodes:1, net worth:971.1024237621931, orders per episode:45.0, no profit episodes:1, comment: random games
+2022-03-18 03:57, Random games, test episodes:1, net worth:1079.9281450147184, orders per episode:48.0, no profit episodes:0, comment: random games
+2022-03-18 04:04, Random games, test episodes:1, net worth:1093.5046628334069, orders per episode:48.0, no profit episodes:0, comment: random games
+2022-03-18 04:10, Random games, test episodes:1, net worth:1042.5475996685152, orders per episode:51.0, no profit episodes:0, comment: random games
+2022-03-18 16:47, 10790.63_Crypto_trader, test episodes:1, net worth:626.8613610343933, orders per episode:67.0, no profit episodes:0, model: CNN, comment: All features
+2022-03-18 16:57, Random games, test episodes:1, net worth:1117.9078783944567, orders per episode:50.0, no profit episodes:0, comment: random games

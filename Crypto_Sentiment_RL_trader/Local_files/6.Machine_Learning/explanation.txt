@@ -1,0 +1,5 @@
+We tried to apply traditional ML methods to predict the sign of the next day BTC course and the sign of the alpha value.
+
+KNN, SVM, and Logistic Regression were applied and mixed results were achieved. This showed that different features have prediction power, but are limited.
+
+The results are not included in the thesis but could be used as a more complex benchmark. For example, define a threshold value for the prediction probability (e.g. 0,75) and perform a 100% buy action if the probability for a next day positive return is predicted. 

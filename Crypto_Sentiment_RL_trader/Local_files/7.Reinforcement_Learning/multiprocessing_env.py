@@ -1,13 +1,3 @@
-#================================================================
-#
-#   File name   : multiprocessing_env.py
-#   Author      : PyLessons
-#   Created date: 2021-02-25
-#   Website     : https://pylessons.com/
-#   GitHub      : https://github.com/pythonlessons/RL-Bitcoin-trading-bot
-#   Description : functions to train/test multiple custom BTC trading environments
-#
-#================================================================
 from collections import deque
 from multiprocessing import Process, Pipe
 import numpy as np
@@ -98,7 +88,7 @@ def train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_wo
 
                 agent.writer.add_scalar('Data/average net_worth', average, episode)
                 agent.writer.add_scalar('Data/episode_orders', episode_orders, episode)
-                
+
                 print("episode: {:<5} worker: {:<2} net worth: {:<7.2f} average: {:<7.2f} orders: {}".format(episode, worker_id, net_worth, average, episode_orders))
                 if episode > len(total_average):
                     if best_average < average:
@@ -106,7 +96,7 @@ def train_multiprocessing(CustomEnv, agent, train_df, train_df_nomalized, num_wo
                         print("Saving model")
                         agent.save(score="{:.2f}".format(best_average), args=[episode, average, episode_orders, a_loss, c_loss])
                     agent.save()
-                
+
                 states[worker_id] = []
                 next_states[worker_id] = []
                 actions[worker_id] = []
@@ -171,7 +161,7 @@ def test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num
                 if net_worth < initial_balance: no_profit_episodes += 1 # calculate episode count where we had negative profit through episode
                 print("episode: {:<5} worker: {:<2} net worth: {:<7.2f} average_net_worth: {:<7.2f} orders: {}".format(episode, worker_id, net_worth, average_net_worth/episode, episode_orders))
                 if episode == test_episodes: break
-            
+
     print("No profit episodes: {}".format(no_profit_episodes))
     # save test results to test_results.txt file
     with open("test_results.txt", "a+") as results:
@@ -179,7 +169,7 @@ def test_multiprocessing(CustomEnv, CustomAgent, test_df, test_df_nomalized, num
         results.write(f'{current_date}, {name}, test episodes:{test_episodes}')
         results.write(f', net worth:{average_net_worth/(episode+1)}, orders per episode:{average_orders/test_episodes}')
         results.write(f', no profit episodes:{no_profit_episodes}, model: {agent.model}, comment: {comment}\n')
-    
+
     # terminating processes after while loop
     works.append(work)
     for work in works:

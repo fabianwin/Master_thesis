@@ -20,9 +20,9 @@ maxTweets = 10000000000000
 restrictions='min_faves:5 exclude:retweets lang:"en"' #min. 5 likes ,no retweets, in english
 dates = ['2021', '2020', '2019', '2018', '2017']
 ticker_col =["tweet_id","date_short","date_medium","date_long","username","content","likes","retweets","followers Count"]
-product_col =["tweet_id","date_short","username","content","likes","retweets","followers Count","keyword"]
+news_col =["tweet_id","date_short","username","content","likes","retweets","followers Count","keyword"]
 ticker_tweets_df = pd.DataFrame(columns=ticker_col)
-product_tweets_df = pd.DataFrame(columns=product_col)
+news_tweets_df = pd.DataFrame(columns=news_col)
 
 #############Functions###################
 def scrape_tweets(keyword,date, year,twitter_df,ticker_col):
@@ -77,7 +77,7 @@ def date_to_epoch_intervall(date):
     return epoch_intervall
 
 #---------------------
-def scrape_product_tweets(keyword):
+def scrape_news_tweets(keyword):
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
     my_file = 'keyword_set_'+keyword+".csv"
     keyword_df = pd.read_csv(os.path.join(my_path, my_file))
@@ -90,7 +90,7 @@ def scrape_product_tweets(keyword):
     print(keyword_df.shape)
 
     #iterate over every row in the complete-set
-    df = product_tweets_df
+    df = news_tweets_df
     for n,row in keyword_df.iterrows():
         print(row['date'])
         date_of_keyword = date_to_epoch_intervall(row['date'])
@@ -98,15 +98,16 @@ def scrape_product_tweets(keyword):
         for i,tweet in enumerate(sntwitter.TwitterSearchScraper(related_keyword+' '+date_of_keyword+' '+restrictions).get_items()):
             if i==maxTweets:
                 break
-            tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=product_tweets_df.columns)
+            tmp = pd.Series([tweet.id, tweet.date, tweet.user.username, tweet.content, tweet.likeCount,tweet.retweetCount,tweet.user.followersCount, related_keyword], index=news_tweets_df.columns)
             print(tweet.date)
             df = df.append( tmp, ignore_index=True)
 
     my_path = os.path.abspath(r'/Users/fabianwinkelmann/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
-    my_file = 'product_set_'+keyword+".csv"
+    my_file = 'news_set_'+keyword+".csv"
     df.to_csv(os.path.join(my_path, my_file))
 
     print("Scraped all tweets based on the received trendwords for", keyword)
+
 #---------------------
 def scrape_google_trendwords(keyword):
     for year in dates:
@@ -140,7 +141,7 @@ def scrape_google_trendwords(keyword):
         my_file = 'keyword_set_'+keyword+"_"+year+".csv"
         complete.to_csv(os.path.join(my_path, my_file))
 
-        print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"Product set in the year", year)
+        print("Google related queries were scraped and we know all the keywords for scraping the",keyword,"news set in the year", year)
         print("there are", complete.shape[0]," unique combinations of keywords and dates")
 
 #---------------------
@@ -164,19 +165,3 @@ def filter_google_queries(keyword,df_tweets):
     len_list.append(len(df_tweets))
 
     return df_tweets
-
-#------------------------
-if __name__ == "__main__":
-    classic_coins = ['BITCOIN', 'ETHEREUM']
-    venture_capital_backed_coins = ['BINANCE', 'CARDANO', 'RIPPLE']
-    community_driven_coins = ['DOGECOIN']
-    coin_list = classic_coins + venture_capital_backed_coins + community_driven_coins
-
-    for keyword in coin_list:
-        print(keyword)
-        my_path = os.path.abspath(r'/Users/fabian/Library/Mobile Documents/com~apple~CloudDocs/Master Thesis/Code/Crypto_Sentiment_RL_trader/2.Data_collection/1.Twitter_Scraping')
-        my_file = 'keyword_set_'+keyword+".csv"
-        keyword_df = pd.read_csv(os.path.join(my_path, my_file))
-        print("Shape before filter: ", keyword_df.shape[0])
-        keyword_df = filter_google_queries(keyword, keyword_df)
-        print("---------------")

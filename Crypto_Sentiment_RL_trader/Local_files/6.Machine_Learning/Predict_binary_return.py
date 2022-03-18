@@ -275,7 +275,7 @@ def missing_values_table(df):
     return mis_val_table_ren_columns
 ########Main##########
 coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
-sets=["ticker", "product"]
+sets=["ticker", "news"]
 
 predict_return = pd.DataFrame([], columns=['Coin','Set_description','supervised ML algorithm type','Features','Accuracy_Score', 'Precision_Score', 'Recall_Score', 'F1_Score'])
 for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
@@ -298,10 +298,10 @@ for afunc in (LogReg_Pred, KNN_Pred, SVM_Pred):
         feature_list_1 = ["ticker_number_of_tweets", "ticker_average_number_of_likes", "ticker_average_number_of_retweets", "ticker_average_number_of_followers", "ticker_finiteautomata_sentiment","ticker_finiteautomata_sentiment_expectation_value_volatility","ROC_2_ticker_finiteautomata_sentiment","Momentum_14_ticker_finiteautomata_sentiment"]
         predict_return = afunc(feature_list_1, coin, set, feature_name, data_df, predict_return)
 
-        #run with product sentiment features only (8 features)
-        set = "product"
+        #run with news sentiment features only (8 features)
+        set = "news"
         feature_name = "Sentiment features"
-        feature_list_2 = ["product_number_of_tweets", "product_average_number_of_likes", "product_average_number_of_retweets", "product_average_number_of_followers", "product_finiteautomata_sentiment","product_finiteautomata_sentiment_expectation_value_volatility","ROC_2_product_finiteautomata_sentiment","Momentum_14_product_finiteautomata_sentiment"]
+        feature_list_2 = ["news_number_of_tweets", "news_average_number_of_likes", "news_average_number_of_retweets", "news_average_number_of_followers", "news_finiteautomata_sentiment","news_finiteautomata_sentiment_expectation_value_volatility","ROC_2_news_finiteautomata_sentiment","Momentum_14_news_finiteautomata_sentiment"]
         predict_return = afunc(feature_list_2, coin, set, feature_name, data_df, predict_return)
 
         # run with finance features only (8 features)

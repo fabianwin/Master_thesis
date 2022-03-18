@@ -110,7 +110,7 @@ def plot_sentiment_price_graph(df, symbol, set_description):
 #----------------------------
 #Main
 coins=['ADA','BNB','BTC','DOGE','ETH', 'XRP']
-sets=["ticker", "product"]
+sets=["ticker", "news"]
 
 for coin in coins:
     for set in sets:
